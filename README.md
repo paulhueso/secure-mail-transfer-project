@@ -1,1 +1,1 @@
-# messagerie-securisee
+# secure-mail-transfer-project
