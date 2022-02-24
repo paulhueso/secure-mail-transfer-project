@@ -1,6 +1,11 @@
 # secure-mail-transfer-project
 
+## Objective 
+The objective of this project is to implement a secure way of transferring files when send emails with attachments.
+This is done using the Identity Based Encrypton.
+
 ## Project tree
+```bash
 .
 ├── README.md
 ├── jars 
@@ -15,3 +20,5 @@
 │   └── view # all .fxml files
 └── static
     └── attachment.txt
+```
+    
