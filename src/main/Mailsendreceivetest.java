@@ -203,8 +203,9 @@ public class Mailsendreceivetest{
                 System.out.println("\t Attachments: " + attachFiles);
                 System.out.println(attachFiles.getClass());
                 System.out.println("\t check Myfiles folder to access the attachement file ..");*/
+                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent, attachFiles);
+                mails.add(mail);
 
-                mails.add(new Mail(i+1, message_seen, from, subject, sentDate, messageContent, attachFiles));
             }
 
             // disconnect
@@ -220,7 +221,6 @@ public class Mailsendreceivetest{
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
         return mails;
     }
 
@@ -245,7 +245,8 @@ public class Mailsendreceivetest{
 
         sc.nextLine(); */
 
-        downloadEmails(username, password);
+        ArrayList<Mail> mails = downloadEmails(username, password);
+        mails.forEach(m -> System.out.println(m));
 
     }
 }

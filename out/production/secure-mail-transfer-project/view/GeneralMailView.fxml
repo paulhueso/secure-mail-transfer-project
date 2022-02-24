@@ -5,11 +5,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GeneralViewController">
    <children>
       <VBox layoutX="287.0" layoutY="141.0" prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -28,14 +31,36 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Button fx:id="refreshBtn" layoutX="611.0" layoutY="23.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="65.0" text="Refresh" />
+                  <Button fx:id="refreshBtn" layoutX="611.0" layoutY="23.0" mnemonicParsing="false" onAction="#refresh" prefHeight="36.0" prefWidth="65.0" text="Refresh">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="521.0" prefWidth="900.0" style="-fx-background-color: #E8E9EB;">
                <children>
                   <ScrollPane layoutX="24.0" layoutY="28.0" prefHeight="492.0" prefWidth="835.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="28.0">
                      <content>
-                        <VBox fx:id="mailsLayout" prefHeight="0.0" prefWidth="849.0" />
+                        <VBox fx:id="mailsLayout" prefHeight="0.0" prefWidth="849.0">
+                           <children>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <GridPane fx:id="mails" layoutY="12.0" prefHeight="36.0" prefWidth="852.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="417.0" minWidth="10.0" prefWidth="262.0" />
+                                          <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="701.0" minWidth="10.0" prefWidth="527.0" />
+                                        <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="701.0" minWidth="10.0" prefWidth="89.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints maxHeight="150.0" minHeight="0.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                           </children></VBox>
                      </content></ScrollPane>
                </children></AnchorPane>
          </children>

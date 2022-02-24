@@ -19,6 +19,17 @@ public class Mail {
         this.attachments = attachments;
     }
 
+    @Override
+    public String toString() {
+        return "Mail{" +
+                "\nseen=" + seen +
+                "\n, from='" + from + '\'' +
+                "\n, subject='" + subject + '\'' +
+                "\n, sentDate='" + sentDate + '\'' +
+                "\n, message='" + message + '\'' +
+                "\n}";
+    }
+
     public int getId() {
         return id;
     }
