@@ -37,6 +37,17 @@ public class LoginController {
 
     @FXML
     private void handleLoginMouse(ActionEvent event) {
+        login();
+    }
+
+    @FXML
+    private void handleLoginKeyEvent(KeyEvent event) {
+        if(event.getCode() == KeyCode.ENTER) {
+            login();
+        }
+    }
+
+    private void login() {
         String mail = emailInput.getText();
         String password = passwordInput.getText();
 
@@ -50,5 +61,4 @@ public class LoginController {
             this.clientApp.showMailsOverview();
         }
     }
-
 }

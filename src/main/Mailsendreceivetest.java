@@ -224,29 +224,4 @@ public class Mailsendreceivetest{
         return mails;
     }
 
-
-
-    public static void main(String[] args) throws GeneralSecurityException {
-
-        //String host = "outlook.office365.com";//change accordingly
-        String username= "test.tpcrypto@outlook.fr";
-        String password= "Azerty123";//change accordingly
-        //  sendmessage(username, password);
-
-        //String path="C:\\Users\\imino\\OneDrive\\Bureau\\img.pdf";
-
-        //sendmessagewithattachement(username, password,username,path);
-      /*  sendmessage(username, password, username);
-
-        System.out.println("message sent ...");
-
-        Scanner sc=new Scanner(System.in);
-        System.out.println("type something ....");
-
-        sc.nextLine(); */
-
-        ArrayList<Mail> mails = downloadEmails(username, password);
-        mails.forEach(m -> System.out.println(m));
-
-    }
 }
