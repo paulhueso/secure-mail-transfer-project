@@ -1,49 +1,79 @@
 package controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import main.MainApp;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import main.Mailsendreceivetest;
+import main.ClientApp;
+import model.Mail;
 
-import java.awt.event.MouseEvent;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+
 
 public class GeneralViewController {
     @FXML
-    private VBox mailsLayout;
+    private GridPane mails;
     @FXML
     private Button refreshBtn;
     @FXML
     private Button writeBtn;
 
-    private MainApp mainApp;
+    private ClientApp clientApp;
 
     public GeneralViewController() {
 
     }
 
-    public MainApp getMainApp() {
-        return mainApp;
+    public ClientApp getClientApp() {
+        return clientApp;
     }
 
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
+    public void setClientApp(ClientApp clientApp) {
+        this.clientApp = clientApp;
     }
 
     @FXML
-    private void initialize() {
-        //Initiatilize mailsLayout with all the currents mails
+    private void initialize() throws GeneralSecurityException {
+        loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
+        //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     @FXML
     private void writeEmail(MouseEvent event) {
-
+        //TODO: write function
     }
 
     @FXML
-    private void refresh(MouseEvent event) {
-
+    private void refresh(ActionEvent event) throws GeneralSecurityException {
+        loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
     }
 
+    private void loadMails(String username, String password) throws GeneralSecurityException {
+        System.out.println("Fetching emails...");
+        ArrayList<Mail> mailList = Mailsendreceivetest.downloadEmails(username, password);
+        mails.getChildren().clear();
+        mailList.forEach(mail -> {
+            addPane(0, mail.getId(), mail.getFrom());
+            addPane(1, mail.getId(), mail.getSubject());
+            addPane(2, mail.getId(), mail.getSentDate());
+        });
+        System.out.println("Done !");
+        //TODO: Insert loading logo
+        //TODO: Broken function
+    }
+
+    private void addPane(int column, int row, String label){
+        Pane pane = new Pane(new Label(label));
+        pane.setMinHeight(20);
+        pane.setOnMouseClicked(e -> {
+            System.out.println(row); //TODO: change screen to mail screen
+        });
+        mails.add(pane, column, row);
+    }
 
 }
