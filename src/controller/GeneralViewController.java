@@ -2,15 +2,13 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import main.Mailsendreceivetest;
-import main.MainApp;
+import main.ClientApp;
 import model.Mail;
 
 import java.security.GeneralSecurityException;
@@ -25,51 +23,57 @@ public class GeneralViewController {
     @FXML
     private Button writeBtn;
 
-    private MainApp mainApp;
+    private ClientApp clientApp;
 
     public GeneralViewController() {
 
     }
 
-    public MainApp getMainApp() {
-        return mainApp;
+    public ClientApp getClientApp() {
+        return clientApp;
     }
 
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
+    public void setClientApp(ClientApp clientApp) {
+        this.clientApp = clientApp;
     }
 
     @FXML
     private void initialize() throws GeneralSecurityException {
-        ArrayList<Mail> mailList = Mailsendreceivetest.downloadEmails("test.tpcrypto@outlook.fr", "Azerty123");
-        mails.setHgap(10);
-        for(int i = 0; i < mailList.size(); i++){
-            mails.add(new Label(mailList.get(i).getFrom()), 0, i);
-            mails.add(new Label(mailList.get(i).getSubject() + " - " + mailList.get(i).getMessage()), 1, i);
-            mails.add(new Label(mailList.get(i).getSentDate()), 2, i);
-        };
-        //TODO: Insert loading logo
-
+        loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
+        //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     @FXML
     private void writeEmail(MouseEvent event) {
-
+        //TODO: write function
     }
 
     @FXML
     private void refresh(ActionEvent event) throws GeneralSecurityException {
-        ArrayList<Mail> mailList = Mailsendreceivetest.downloadEmails("test.tpcrypto@outlook.fr", "Azerty123");
-        mails.getChildren().clear();
-        for(int i = 0; i < mailList.size(); i++){
-            mails.add(new Label(mailList.get(i).getFrom()), 0, i);
-            mails.add(new Label(mailList.get(i).getSubject() + " - " + mailList.get(i).getMessage()), 1, i);
-            mails.add(new Label(mailList.get(i).getSentDate()), 2, i);
-        };
-        //TODO: Insert loading logo
+        loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
     }
 
+    private void loadMails(String username, String password) throws GeneralSecurityException {
+        System.out.println("Fetching emails...");
+        ArrayList<Mail> mailList = Mailsendreceivetest.downloadEmails(username, password);
+        mails.getChildren().clear();
+        mailList.forEach(mail -> {
+            addPane(0, mail.getId(), mail.getFrom());
+            addPane(1, mail.getId(), mail.getSubject());
+            addPane(2, mail.getId(), mail.getSentDate());
+        });
+        System.out.println("Done !");
+        //TODO: Insert loading logo
+        //TODO: Broken function
+    }
 
-
+    private void addPane(int column, int row, String label){
+        Pane pane = new Pane(new Label(label));
+        pane.setMinHeight(20);
+        pane.setOnMouseClicked(e -> {
+            System.out.println(row); //TODO: change screen to mail screen
+        });
+        mails.add(pane, column, row);
+    }
 
 }
