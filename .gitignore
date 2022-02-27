@@ -17,7 +17,6 @@ out/production/messagerie-securisee/*.class
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
