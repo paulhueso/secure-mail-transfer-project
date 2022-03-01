@@ -4,9 +4,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import main.Mailsendreceivetest;
 import main.ClientApp;
 import model.Mail;
@@ -20,6 +24,16 @@ public class GeneralViewController {
     private Button refreshBtn;
     @FXML
     private Button writeBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Label dateLabel;
+    @FXML
+    private Label subjectLabel;
+    @FXML
+    private Label fromLabel;
+    @FXML
+    private VBox vBoxDetailledMail;
 
     @FXML
     private TableView<Mail> mailTable;
@@ -29,6 +43,8 @@ public class GeneralViewController {
     private TableColumn<Mail, String> subject;
     @FXML
     private TableColumn<Mail, String> receivedDate;
+    @FXML
+    private WebView mailContent;
 
     private ClientApp clientApp;
 
@@ -66,7 +82,26 @@ public class GeneralViewController {
     }
 
     private void displayEmail(Mail selectedMail) {
+        mailTable.setVisible(false);
+        refreshBtn.setVisible(false);
+        backBtn.setVisible(true);
+        vBoxDetailledMail.setVisible(true);
 
+        dateLabel.setText(selectedMail.getSentDate().get());
+        fromLabel.setText(selectedMail.getFrom().get());
+        subjectLabel.setText(selectedMail.getSubject().get());
+
+        WebEngine engine = mailContent.getEngine();
+        engine.loadContent(selectedMail.getMessage().get());
+        System.out.println(selectedMail.getMessage().get());
+    }
+
+    @FXML
+    private void displayEmailOverview(){
+        mailTable.setVisible(true);
+        refreshBtn.setVisible(true);
+        backBtn.setVisible(false);
+        vBoxDetailledMail.setVisible(false);
     }
 
     public ClientApp getClientApp() {
