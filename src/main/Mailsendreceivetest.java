@@ -9,11 +9,12 @@ package main;/*
  * @author imino
  */
 import com.sun.mail.util.MailSSLSocketFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import model.Mail;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Properties;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -117,9 +118,8 @@ public class Mailsendreceivetest{
 
 
 
-    public static ArrayList<Mail> downloadEmails(String userName, String password) throws GeneralSecurityException {
-        ArrayList<Mail> mails = new ArrayList<>();
-
+    public static ObservableList<Mail> downloadEmails(String userName, String password) throws GeneralSecurityException {
+        ObservableList<Mail> mails = FXCollections.observableArrayList();
         Properties properties = new Properties();
 
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
@@ -173,7 +173,7 @@ public class Mailsendreceivetest{
                             // this part is attachment
                             String fileName = part.getFileName();
                             attachFiles += fileName + ", ";
-                            part.saveFile("Myfiles" + File.separator + fileName); // le dossier Myfiles à créer dans votre projet 
+                            part.saveFile("Myfiles" + File.separator + fileName); // le dossier Myfiles à créer dans votre projet
 
 
                         } else {
