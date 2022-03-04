@@ -93,7 +93,6 @@ public class GeneralViewController {
 
         WebEngine engine = mailContent.getEngine();
         engine.loadContent(selectedMail.getMessage());
-        System.out.println(selectedMail.getMessage());
     }
 
     @FXML

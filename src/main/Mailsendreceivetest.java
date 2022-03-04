@@ -12,6 +12,7 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Mail;
+import model.User;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,7 +39,8 @@ import javax.mail.internet.MimeMultipart;
 
 public class Mailsendreceivetest{
 
-    public static void sendmessage(String user, String password, String destination) throws GeneralSecurityException {
+    public static void sendmessage(User sender, String destination, String content, String subject) throws GeneralSecurityException {
+        System.out.println("Sending email...");
         Properties properties = new Properties();
 
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
@@ -52,18 +54,18 @@ public class Mailsendreceivetest{
         properties.put("mail.smtp.port", "587");
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user,password);
+                return new PasswordAuthentication(sender.getUsername(), sender.getPassword());
             }
         });
         System.out.println("session.getProviders():"+session.getProviders()[0].getType());
         try{
             MimeMessage message=new MimeMessage(session);
-            message.setFrom(user);
-            message.setText("Bonjour, \n ceci est mon premier mail depuis javamail ...");
+            message.setFrom(sender.getUsername());
+            message.setText(content);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
-            message.setSubject("mon premier email ..");
+            message.setSubject(subject);
             Transport.send(message);
-
+            System.out.println("Mail sent !");
 
         } catch (NoSuchProviderException e) {e.printStackTrace();}
         catch (MessagingException e) {e.printStackTrace();}

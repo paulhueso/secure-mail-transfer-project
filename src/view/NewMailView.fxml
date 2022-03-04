@@ -42,7 +42,7 @@
                     <buttons>
                       <Button fx:id="backBtn" mnemonicParsing="false" onAction="#showMails" prefHeight="40.0" text="Back" />
                         <Button fx:id="attachmentBtn" mnemonicParsing="false" onAction="#insertAttachment" prefHeight="40.0" text="Insert attachment" />
-                        <Button fx:id="sendBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="0.0" text="Send" />
+                        <Button fx:id="sendBtn" mnemonicParsing="false" onAction="#sendMail" prefHeight="40.0" prefWidth="0.0" text="Send" />
                     </buttons>
                      <HBox.margin>
                         <Insets />
@@ -53,7 +53,7 @@
                   </ButtonBar>
                </children>
             </HBox>
-            <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="570.0" prefWidth="900.0" />
+            <HTMLEditor fx:id="mailContent" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="570.0" prefWidth="900.0" />
          </children>
       </VBox>
    </children>
