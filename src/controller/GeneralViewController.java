@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,18 +55,17 @@ public class GeneralViewController {
 
     @FXML
     private void initialize() throws GeneralSecurityException {
-        //loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
-        from.setCellValueFactory(cellData -> cellData.getValue().getFrom());
-        subject.setCellValueFactory(cellData -> cellData.getValue().getSubject());
-        receivedDate.setCellValueFactory(cellData -> cellData.getValue().getSentDate());
+        from.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFrom()));
+        subject.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSubject()));
+        receivedDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSentDate()));
         mailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> displayEmail(newValue));
         loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     @FXML
-    private void writeEmail(MouseEvent event) {
-        //TODO: write function
+    private void writeEmail(ActionEvent event) {
+        clientApp.showSendMailOverview();
     }
 
     @FXML
@@ -87,13 +87,13 @@ public class GeneralViewController {
         backBtn.setVisible(true);
         vBoxDetailledMail.setVisible(true);
 
-        dateLabel.setText(selectedMail.getSentDate().get());
-        fromLabel.setText(selectedMail.getFrom().get());
-        subjectLabel.setText(selectedMail.getSubject().get());
+        dateLabel.setText(selectedMail.getSentDate());
+        fromLabel.setText(selectedMail.getFrom());
+        subjectLabel.setText(selectedMail.getSubject());
 
         WebEngine engine = mailContent.getEngine();
-        engine.loadContent(selectedMail.getMessage().get());
-        System.out.println(selectedMail.getMessage().get());
+        engine.loadContent(selectedMail.getMessage());
+        System.out.println(selectedMail.getMessage());
     }
 
     @FXML

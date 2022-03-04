@@ -203,7 +203,7 @@ public class Mailsendreceivetest{
                 System.out.println("\t Attachments: " + attachFiles);
                 System.out.println(attachFiles.getClass());
                 System.out.println("\t check Myfiles folder to access the attachement file ..");*/
-                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent, attachFiles);
+                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent);
                 mails.add(mail);
 
             }
