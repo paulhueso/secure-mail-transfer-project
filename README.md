@@ -22,3 +22,7 @@ This is done using the Identity Based Encrypton.
     └── attachment.txt
 ```
     
+## TODO
+- Date to date and not String
+- Store emails in ArrayList to accelerate loading
+- Handle attachments

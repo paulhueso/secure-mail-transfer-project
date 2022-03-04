@@ -34,12 +34,12 @@
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="emailInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="194.0" GridPane.columnIndex="1" />
+            <TextField fx:id="emailInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="194.0" text="test.tpcrypto@outlook.fr" GridPane.columnIndex="1" />
             <Label text="Password" GridPane.rowIndex="1">
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <PasswordField fx:id="passwordInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="256.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="256.0" text="Azerty123" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#handleLoginMouse" text="Log in" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="132.0" />

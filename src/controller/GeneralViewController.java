@@ -60,7 +60,8 @@ public class GeneralViewController {
         receivedDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSentDate()));
         mailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> displayEmail(newValue));
-        loadMails("test.tpcrypto@outlook.fr", "Azerty123");
+        loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
+        //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     @FXML
@@ -70,8 +71,8 @@ public class GeneralViewController {
 
     @FXML
     private void refresh(ActionEvent event) throws GeneralSecurityException {
-        //loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
-        loadMails("test.tpcrypto@outlook.fr", "Azerty123");
+        loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
+        //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     private void loadMails(String username, String password) throws GeneralSecurityException {
