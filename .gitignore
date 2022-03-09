@@ -1,7 +1,8 @@
 .idea
 .vscode
+secure-mail-transfer-project.iml
 messagerie-securisee.iml
-out/production/messagerie-securisee/*.class
+out
 
 # imported from https://github.com/github/gitignore/blob/main/Java.gitignore
 # Compiled class file
