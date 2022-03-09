@@ -6,9 +6,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -21,12 +24,12 @@
             <children>
                 <AnchorPane prefHeight="82.0" prefWidth="900.0">
                     <children>
-                        <Text layoutX="54.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICY's Secure mail application">
+                        <Text layoutX="106.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICY's Secure mail application" AnchorPane.bottomAnchor="24.482421875" AnchorPane.topAnchor="25.576171875">
                             <font>
                                 <Font size="18.0" />
                             </font>
                         </Text>
-                        <Button fx:id="writeBtn" layoutX="729.0" layoutY="24.0" mnemonicParsing="false" onAction="#writeEmail" prefHeight="36.0" prefWidth="141.0" text="Write email">
+                        <Button fx:id="writeBtn" layoutX="729.0" layoutY="24.0" mnemonicParsing="false" onAction="#writeEmail" prefHeight="36.0" prefWidth="141.0" text="Write email" AnchorPane.topAnchor="20.0">
                             <opaqueInsets>
                                 <Insets />
                             </opaqueInsets>
@@ -34,7 +37,7 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </Button>
-                        <Button fx:id="refreshBtn" layoutX="648.0" layoutY="24.0" mnemonicParsing="false" onAction="#refresh" prefHeight="36.0" prefWidth="65.0" text="Refresh">
+                        <Button fx:id="refreshBtn" layoutX="648.0" layoutY="24.0" mnemonicParsing="false" onAction="#refresh" prefHeight="36.0" prefWidth="65.0" text="Refresh" AnchorPane.topAnchor="20.0">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor></Button>
@@ -43,13 +46,18 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
+                  <ImageView fitHeight="51.0" fitWidth="51.0" layoutX="24.0" layoutY="12.0">
+                     <image>
+                        <Image url="@../images/icon-securemail.png" />
+                     </image>
+                  </ImageView>
                     </children>
                 </AnchorPane>
-                <AnchorPane prefHeight="521.0" prefWidth="900.0" style="-fx-background-color: #E8E9EB;">
+                <AnchorPane prefHeight="534.0" prefWidth="900.0" style="-fx-background-color: #E8E9EB;">
                     <children>
                   <VBox fx:id="vBoxDetailledMail" prefHeight="520.0" prefWidth="900.0" visible="false">
                      <children>
-                        <GridPane prefHeight="74.0" prefWidth="900.0">
+                        <GridPane prefHeight="73.0" prefWidth="900.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="773.0" minWidth="10.0" prefWidth="735.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="557.0" minWidth="10.0" prefWidth="165.0" />
@@ -82,7 +90,30 @@
                               </Label>
                            </children>
                         </GridPane>
-                        <WebView fx:id="mailContent" prefHeight="459.0" prefWidth="900.0" />
+                        <WebView fx:id="mailContent" prefHeight="407.0" prefWidth="900.0" />
+                        <GridPane prefHeight="30.0" prefWidth="900.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.33331298828125" minWidth="0.0" prefWidth="52.33331934611003" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="600.0" minWidth="10.0" prefWidth="116.33333333333334" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="760.3333485921223" minWidth="10.0" prefWidth="730.6666666666666" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="nbAttachments" text="Label">
+                                 <GridPane.margin>
+                                    <Insets left="24.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="attachment(s)" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="7.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Button fx:id="dowloadBtn" mnemonicParsing="false" text="Download attachments" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
                      </children>
                   </VBox>
                   <TableView fx:id="mailTable" prefHeight="520.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -92,6 +123,7 @@
                         <TableColumn fx:id="receivedDate" prefWidth="201.3333740234375" text="Date" />
                     </columns>
                   </TableView>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
                     </children></AnchorPane>
             </children>
         </VBox>

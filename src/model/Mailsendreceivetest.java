@@ -1,4 +1,4 @@
-package main;/*
+package model;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -119,7 +119,7 @@ public class Mailsendreceivetest{
             message.setContent(myemailcontent);
             Transport.send(message);
 
-
+            System.out.println("Mail sent!");
 
         } catch (NoSuchProviderException e) {e.printStackTrace();}
         catch (MessagingException e) {e.printStackTrace();}
@@ -183,8 +183,7 @@ public class Mailsendreceivetest{
                             // this part is attachment
                             String fileName = part.getFileName();
                             attachFiles += fileName + ", ";
-                            part.saveFile(File.separator + fileName); // le dossier Myfiles à créer dans votre projet
-
+                            part.saveFile(fileName); // le dossier Myfiles à créer dans votre projet
 
                         } else {
                             // this part may be the message content

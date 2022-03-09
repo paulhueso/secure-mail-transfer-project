@@ -21,8 +21,15 @@ This is done using the Identity Based Encrypton.
 └── static
     └── attachment.txt
 ```
+
+## Jars recquired
+- JPBC
+- JavaFX
+- activation-1.1.1.jar
+- Javax
     
 ## TODO
 - Date to date and not String
 - Store emails in ArrayList to accelerate loading
 - Handle attachments
+

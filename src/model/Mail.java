@@ -31,7 +31,7 @@ public class Mail {
         this.subject = subject;
         this.sentDate = sentDate;
         this.message = message;
-        this.attachments = attachments;
+        this.attachments = null;
     }
 
     @Override

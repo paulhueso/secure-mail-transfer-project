@@ -8,15 +8,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import main.Mailsendreceivetest;
+import model.Mailsendreceivetest;
 import main.ClientApp;
 import model.Mail;
 
+import java.io.File;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 
 
 public class GeneralViewController {
@@ -35,6 +36,10 @@ public class GeneralViewController {
     private Label fromLabel;
     @FXML
     private VBox vBoxDetailledMail;
+    @FXML
+    private Button downloadBtn;
+    @FXML
+    private Label nbAttachments;
 
     @FXML
     private TableView<Mail> mailTable;
@@ -61,6 +66,7 @@ public class GeneralViewController {
         mailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> displayEmail(newValue));
         loadMails(this.clientApp.getUser().getUsername(), this.clientApp.getUser().getPassword());
+
         //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
@@ -94,6 +100,15 @@ public class GeneralViewController {
 
         WebEngine engine = mailContent.getEngine();
         engine.loadContent(selectedMail.getMessage());
+
+        ArrayList<File> attachments = selectedMail.getAttachments();
+
+        if(attachments == null || attachments.isEmpty()){
+            nbAttachments.setText("No");
+        } else {
+            downloadBtn.setVisible(true);
+            nbAttachments.setText(String.valueOf(attachments.size()));
+        }
     }
 
     @FXML
