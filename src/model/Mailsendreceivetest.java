@@ -1,4 +1,4 @@
-package main;/*
+package model;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -12,9 +12,11 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Mail;
+import model.User;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Properties;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -38,7 +40,8 @@ import javax.mail.internet.MimeMultipart;
 
 public class Mailsendreceivetest{
 
-    public static void sendmessage(String user, String password, String destination) throws GeneralSecurityException {
+    public static void sendmessage(User sender, String destination, String content, String subject) throws GeneralSecurityException {
+        System.out.println("Sending email...");
         Properties properties = new Properties();
 
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
@@ -52,25 +55,25 @@ public class Mailsendreceivetest{
         properties.put("mail.smtp.port", "587");
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user,password);
+                return new PasswordAuthentication(sender.getUsername(), sender.getPassword());
             }
         });
         System.out.println("session.getProviders():"+session.getProviders()[0].getType());
         try{
             MimeMessage message=new MimeMessage(session);
-            message.setFrom(user);
-            message.setText("Bonjour, \n ceci est mon premier mail depuis javamail ...");
+            message.setFrom(sender.getUsername());
+            message.setText(content);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
-            message.setSubject("mon premier email ..");
+            message.setSubject(subject);
             Transport.send(message);
-
+            System.out.println("Mail sent !");
 
         } catch (NoSuchProviderException e) {e.printStackTrace();}
         catch (MessagingException e) {e.printStackTrace();}
 
     }
 
-    public static void sendmessagewithattachement(String user, String password, String destination, String attachement_path) throws GeneralSecurityException {
+    public static void sendmessagewithattachement(User sender, String destination, String content, String subject, ArrayList<File> attachments) throws GeneralSecurityException {
         Properties properties = new Properties();
 
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
@@ -84,35 +87,42 @@ public class Mailsendreceivetest{
         properties.put("mail.smtp.port", "587");
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user,password);
+                return new PasswordAuthentication(sender.getUsername(),sender.getPassword());
             }
         });
         System.out.println("session.getProviders():"+session.getProviders()[0].getType());
         try{
             MimeMessage message=new MimeMessage(session);
-            message.setFrom(user);
+            message.setFrom(sender.getUsername());
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
-            message.setSubject("mon premier email avec piece jointe..");
+            message.setSubject(subject);
 
             Multipart myemailcontent=new MimeMultipart();
             MimeBodyPart bodypart=new MimeBodyPart();
-            bodypart.setText("ceci est un test de mail avec piece jointe ...");
+            bodypart.setText(content);
 
 
 
-            MimeBodyPart attachementfile=new MimeBodyPart();
-            attachementfile.attachFile(attachement_path);
+            MimeBodyPart attachementfiles=new MimeBodyPart();
+            attachments.forEach(file -> {
+                try {
+                    attachementfiles.attachFile(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            });
+
             myemailcontent.addBodyPart(bodypart);
-            myemailcontent.addBodyPart(attachementfile);
+            myemailcontent.addBodyPart(attachementfiles);
             message.setContent(myemailcontent);
             Transport.send(message);
 
-
+            System.out.println("Mail sent!");
 
         } catch (NoSuchProviderException e) {e.printStackTrace();}
-        catch (MessagingException e) {e.printStackTrace();} catch (IOException ex) {
-            Logger.getLogger(Mailsendreceivetest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        catch (MessagingException e) {e.printStackTrace();}
 
     }
 
@@ -173,8 +183,7 @@ public class Mailsendreceivetest{
                             // this part is attachment
                             String fileName = part.getFileName();
                             attachFiles += fileName + ", ";
-                            part.saveFile("Myfiles" + File.separator + fileName); // le dossier Myfiles à créer dans votre projet
-
+                            part.saveFile(fileName); // le dossier Myfiles à créer dans votre projet
 
                         } else {
                             // this part may be the message content
@@ -193,17 +202,7 @@ public class Mailsendreceivetest{
                     }
                 }
 
-                // print out details of each message
-                /*System.out.println("Message #" + (i + 1) + ":");
-                System.out.println("message seen ?:" + message_seen);
-                System.out.println("\t From: " + from);
-                System.out.println("\t Subject: " + subject);
-                System.out.println("\t Sent Date: " + sentDate);
-                System.out.println("\t Message: " + messageContent);
-                System.out.println("\t Attachments: " + attachFiles);
-                System.out.println(attachFiles.getClass());
-                System.out.println("\t check Myfiles folder to access the attachement file ..");*/
-                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent, attachFiles);
+                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent);
                 mails.add(mail);
 
             }

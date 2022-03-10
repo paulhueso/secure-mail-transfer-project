@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import controller.GeneralViewController;
 import controller.LoginController;
+import controller.SendMailController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -67,6 +68,23 @@ public class ClientApp extends Application {
             loader.setLocation(ClientApp.class.getResource("../view/GeneralMailView.fxml"));
 
             GeneralViewController controller = new GeneralViewController();
+            loader.setController(controller);
+            controller.setClientApp(this);
+
+            AnchorPane mailOverview = loader.load();
+
+            rootLayout.setCenter(mailOverview);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showSendMailOverview() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(ClientApp.class.getResource("../view/NewMailView.fxml"));
+
+            SendMailController controller = new SendMailController();
             loader.setController(controller);
             controller.setClientApp(this);
 

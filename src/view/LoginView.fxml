@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -14,12 +16,12 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="399.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connexion">
+      <Text layoutX="399.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connexion">
          <font>
             <Font size="22.0" />
          </font>
       </Text>
-      <GridPane layoutX="316.0" layoutY="226.0" prefHeight="91.0" prefWidth="269.0">
+      <GridPane layoutX="316.0" layoutY="297.0" prefHeight="91.0" prefWidth="269.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="191.0" minWidth="10.0" prefWidth="107.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="229.0" minWidth="10.0" prefWidth="205.0" />
@@ -34,12 +36,12 @@
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="emailInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="194.0" GridPane.columnIndex="1" />
+            <TextField fx:id="emailInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="194.0" text="test.tpcrypto@outlook.fr" GridPane.columnIndex="1" />
             <Label text="Password" GridPane.rowIndex="1">
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <PasswordField fx:id="passwordInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="256.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordInput" onKeyPressed="#handleLoginKeyEvent" prefHeight="25.0" prefWidth="256.0" text="Azerty123" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#handleLoginMouse" text="Log in" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="132.0" />
@@ -47,5 +49,10 @@
             </Button>
          </children>
       </GridPane>
+      <ImageView fitHeight="97.0" fitWidth="95.0" layoutX="403.0" layoutY="178.0">
+         <image>
+            <Image url="@../images/icon-securemail.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

@@ -1,25 +1,37 @@
 package model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class Mail {
     private int id;
     private boolean seen;
-    private StringProperty from;
-    private StringProperty subject;
-    private StringProperty sentDate;
-    private StringProperty message;
-    private StringProperty attachments;
+    private String from;
+    private String subject;
+    private String sentDate;
+    private String message;
+    private ArrayList<File> attachments;
 
-    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message, String attachments) {
+    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message, ArrayList<File> attachments) {
         this.id = id;
         this.seen = seen;
-        this.from = new SimpleStringProperty(from);
-        this.subject = new SimpleStringProperty(subject);
-        this.sentDate = new SimpleStringProperty(sentDate);
-        this.message = new SimpleStringProperty(message);
-        this.attachments = new SimpleStringProperty(attachments);
+        this.from = from;
+        this.subject = subject;
+        this.sentDate = sentDate;
+        this.message = message;
+        this.attachments = attachments;
+    }
+
+    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message) {
+        this.id = id;
+        this.seen = seen;
+        this.from = from;
+        this.subject = subject;
+        this.sentDate = sentDate;
+        this.message = message;
+        this.attachments = null;
     }
 
     @Override
@@ -49,43 +61,43 @@ public class Mail {
         this.seen = seen;
     }
 
-    public StringProperty getFrom() {
+    public String getFrom() {
         return from;
     }
 
     public void setFrom(String from) {
-        this.from = new SimpleStringProperty(from);
+        this.from = from;
     }
 
-    public StringProperty getSubject() {
+    public String getSubject() {
         return subject;
     }
 
     public void setSubject(String subject) {
-        this.subject = new SimpleStringProperty(subject);
+        this.subject = subject;
     }
 
-    public StringProperty getSentDate() {
+    public String getSentDate() {
         return sentDate;
     }
 
     public void setSentDate(String sentDate) {
-        this.sentDate = new SimpleStringProperty(sentDate);
+        this.sentDate = sentDate;
     }
 
-    public StringProperty getMessage() {
+    public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
-        this.message = new SimpleStringProperty(message);
+        this.message = message;
     }
 
-    public StringProperty getAttachments() {
+    public ArrayList<File> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(String attachments) {
-        this.attachments = new SimpleStringProperty(attachments);
+    public void setAttachments(ArrayList<File> attachments) {
+        this.attachments = attachments;
     }
 }
