@@ -5,6 +5,8 @@
  */
 package client;
 
+import utilities.Utilities;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,7 +27,8 @@ public class Client {
         
         
         try {
-                  URL url = new URL("http://192.168.56.1:8080/service");
+                  URL url = new URL("http://" + Utilities.getConfigItem("IP") + ":" +
+                          Utilities.getConfigItem("PORT") + Utilities.getConfigItem("URL_PATH"));
             // URL url = new URL("https://www.google.com");
            
               URLConnection urlConn = url.openConnection();

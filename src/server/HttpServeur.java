@@ -8,6 +8,9 @@ package javaapplication4;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import jdk.jshell.execution.Util;
+import utilities.Utilities;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -35,7 +38,7 @@ public class HttpServeur {
               
 /*  135 */               HttpServer server = HttpServer.create(s, 1000);
 /*  136 */               System.out.println(server.getAddress());
-/*  137 */               server.createContext("/service", new HttpHandler()
+/*  137 */               server.createContext(Utilities.getConfigItem("URL_PATH"), new HttpHandler()
 /*      */                   {
 /*      */                     public void handle(HttpExchange he) throws IOException {
 /*  140 */                        byte[] bytes1 = new byte[Integer.parseInt(he.getRequestHeaders().getFirst("Content-length"))];
