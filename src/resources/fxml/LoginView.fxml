@@ -51,7 +51,7 @@
       </GridPane>
       <ImageView fitHeight="97.0" fitWidth="95.0" layoutX="403.0" layoutY="178.0">
          <image>
-            <Image url="@../images/icon-securemail.png" />
+            <Image url="@../img/icon-securemail.png" />
          </image>
       </ImageView>
    </children>

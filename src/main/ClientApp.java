@@ -33,7 +33,7 @@ public class ClientApp extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("../view/RootLayout.fxml"));
+            loader.setLocation(ClientApp.class.getResource("../resources/fxml/RootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
 
             // Show the scene containing the root layout.
@@ -48,7 +48,7 @@ public class ClientApp extends Application {
     public void showConnexionLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("../view/LoginView.fxml"));
+            loader.setLocation(ClientApp.class.getResource("../resources/fxml/LoginView.fxml"));
 
             LoginController controller = new LoginController();
             loader.setController(controller);
@@ -65,7 +65,7 @@ public class ClientApp extends Application {
     public void showMailsOverview() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("../view/GeneralMailView.fxml"));
+            loader.setLocation(ClientApp.class.getResource("../resources/fxml/GeneralMailView.fxml"));
 
             GeneralViewController controller = new GeneralViewController();
             loader.setController(controller);
@@ -82,7 +82,7 @@ public class ClientApp extends Application {
     public void showSendMailOverview() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("../view/NewMailView.fxml"));
+            loader.setLocation(ClientApp.class.getResource("../resources/fxml/NewMailView.fxml"));
 
             SendMailController controller = new SendMailController();
             loader.setController(controller);
