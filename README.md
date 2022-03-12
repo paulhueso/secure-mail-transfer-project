@@ -14,9 +14,9 @@ This is done using the Identity Based Encrypton.
 │  
 ├── secure-mail-transfer-project.iml
 ├── src
-│   ├── controller # controllers to link JavaFX layout to functions
-│   ├── main # main functions
-│   ├── model # all classes
+│   ├── client.controller # controllers to link JavaFX layout to functions
+│   ├── client.main # client.main functions
+│   ├── client.model # all classes
 │   └── view # all .fxml files
 └── static
     └── attachment.txt

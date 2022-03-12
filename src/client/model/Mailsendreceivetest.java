@@ -1,4 +1,4 @@
-package model;/*
+package client.model;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -11,8 +11,6 @@ package model;/*
 import com.sun.mail.util.MailSSLSocketFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Mail;
-import model.User;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -24,8 +22,6 @@ import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Multipart;
