@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author imino
  */
-public class Client {
+public class HttpClient {
     
     public static void main(String[] args) {
         
@@ -46,9 +46,9 @@ public class Client {
             System.out.println("message reçu du serveur:"+response);
        
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HttpClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HttpClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

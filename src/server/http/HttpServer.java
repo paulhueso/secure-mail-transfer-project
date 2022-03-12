@@ -7,7 +7,6 @@ package server.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import utilities.Utilities;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author imino
  */
-public class HttpServeur {
+public class HttpServer {
     
     
     
@@ -34,7 +33,7 @@ public class HttpServeur {
             //  InetSocketAddress s = new InetSocketAddress("localhost", 8080);
               
               
-/*  135 */               HttpServer server = HttpServer.create(s, 1000);
+/*  135 */               com.sun.net.httpserver.HttpServer server = com.sun.net.httpserver.HttpServer.create(s, 1000);
 /*  136 */               System.out.println(server.getAddress());
 /*  137 */               server.createContext(Utilities.getConfigItem("URL_PATH"), new HttpHandler()
 /*      */                   {
@@ -59,7 +58,7 @@ public class HttpServeur {
 /*      */ 
             server.start();
         } catch (IOException ex) {
-            Logger.getLogger(HttpServeur.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HttpServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
