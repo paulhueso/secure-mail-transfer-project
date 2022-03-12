@@ -8,14 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 public class Utilities {
+    private static final String CONFIG_FILE_NAME = "config.txt";
+    private static final String FIELD_SEPARATOR = "=";
     private static Map<String, String> CONFIG;
 
     static {
         try {
-            CONFIG = new HashMap<String, String>();
-            List<String> fileContent = Files.readAllLines(Path.of("config.txt"));
+            CONFIG = new HashMap<>();
+            List<String> fileContent = Files.readAllLines(Path.of(CONFIG_FILE_NAME));
             for (String line: fileContent) {
-                String[] splittedLine = line.split("=");
+                String[] splittedLine = line.split(FIELD_SEPARATOR);
                 CONFIG.put(splittedLine[0], splittedLine[1]);
             }
         } catch (IOException e) {
