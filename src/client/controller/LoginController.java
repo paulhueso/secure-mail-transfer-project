@@ -69,9 +69,9 @@ public class LoginController {
             alert.showAndWait();
         } else {
             User user = new User(mail, password);
-            //this.clientApp.setUser(user);
-            //this.clientApp.showMailsOverview();
-            //getSecretKey(user);
+            this.clientApp.setUser(user);
+            this.clientApp.showMailsOverview();
+            getSecretKey(user);
             getPublicParams();
         }
     }
@@ -97,6 +97,8 @@ public class LoginController {
             is.read(sKBytes);
             Element sk = pairing.getG1().newElementFromBytes(sKBytes);
             System.out.println("sk : "+sk);
+
+            this.clientApp.getUser().setsK(sk);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -133,8 +135,14 @@ public class LoginController {
             ois.close();
             fis.close();
 
-            System.out.println("p_pub : " + pairing.getG1().newElementFromBytes(publicParams.getP_pub()));
-            System.out.println("p : " + pairing.getG1().newElementFromBytes(publicParams.getP()));
+            Element p_pub = pairing.getG1().newElementFromBytes(publicParams.getP_pub());
+            Element p = pairing.getG1().newElementFromBytes(publicParams.getP());
+
+            this.clientApp.setP_pub(p_pub);
+            this.clientApp.setP_pub(p);
+
+            System.out.println("p : " + p);
+            System.out.println("p_pub : " + p_pub);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
