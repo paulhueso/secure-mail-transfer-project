@@ -32,24 +32,23 @@ class ServerHttp {
     public static void main(String[] args) {
      
         try {
-             // InetSocketAddress s = new InetSocketAddress("localhost", 8080);
             InetSocketAddress s = new InetSocketAddress(InetAddress.getLocalHost(), 8080);
-            //  InetSocketAddress s = new InetSocketAddress("localhost", 8080);
-              
+
+            //Setup
+            System.out.println("Setup ....");
+            Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+            SettingParameters sp = IBEBasicIdent.setup(pairing); // génération des paramètres du système (ie: generateur, clef publique du système et clef du maitre)
+            System.out.println("Paremètre du système :");
+            System.out.println("generator:" + pairing.getG1().newElementFromBytes(sp.getPublicParams().getP()));
+            System.out.println("P_pub:" + pairing.getG1().newElementFromBytes(sp.getPublicParams().getP_pub()));
+            System.out.println("MSK:" + sp.getMsk());
               
             HttpServer server = HttpServer.create(s, 1000);
             System.out.println(server.getAddress());
             server.createContext("/key", new HttpHandler()
             {
                 public void handle(HttpExchange he) throws IOException {
-                    //Setup
-                    System.out.println("Setup ....");
-                    Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
-                    SettingParameters sp = IBEBasicIdent.setup(pairing); // génération des paramètres du système (ie: generateur, clef publique du système et clef du maitre)
-                    System.out.println("Paremètre du système :");
-                    System.out.println("generator:" + sp.getP());
-                    System.out.println("P_pub:" + sp.getP_pub());
-                    System.out.println("MSK:" + sp.getMsk());
+                    System.out.println("--------------------------");
 
                     //Receive id
                     byte[] bytes1 = new byte[Integer.parseInt(he.getRequestHeaders().getFirst("Content-length"))];
@@ -68,12 +67,39 @@ class ServerHttp {
                     System.out.println("PK:" + keys.getPk());
                     System.out.println("SK:" + keys.getSk());
 
-                    byte[] keysBytes = keys.getSk().toBytes();
+                    byte[] keyBytes = keys.getSk().toBytes();
 
-                    he.sendResponseHeaders(200, keysBytes.length);
+                    he.sendResponseHeaders(200, keyBytes.length);
                     OutputStream os = he.getResponseBody();
 
-                    os.write(keysBytes);
+                    os.write(keyBytes);
+                    System.out.println("sending response done....");
+                    os.close();
+                }
+            });
+
+            server.createContext("/publicparams", new HttpHandler()
+            {
+                public void handle(HttpExchange he) throws IOException {
+                    System.out.println("............................");
+
+                    //Serialization
+                    FileOutputStream fos = new FileOutputStream("serialized.txt");
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(sp.getPublicParams());
+                    oos.close();
+                    fos.close();
+
+                    //Binary read to send through response
+                    FileInputStream fis = new FileInputStream("serialized.txt");
+                    byte[] filebytes = new byte[fis.available()];
+                    fis.read(filebytes);
+                    fis.close();
+
+                    //Response
+                    he.sendResponseHeaders(200, filebytes.length);
+                    OutputStream os = he.getResponseBody();
+                    os.write(filebytes);
                     System.out.println("sending response done....");
                     os.close();
                 }

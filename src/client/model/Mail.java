@@ -10,16 +10,16 @@ public class Mail {
     private String subject;
     private String sentDate;
     private String message;
-    private ArrayList<File> attachments;
+    private File attachment;
 
-    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message, ArrayList<File> attachments) {
+    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message, File attachment) {
         this.id = id;
         this.seen = seen;
         this.from = from;
         this.subject = subject;
         this.sentDate = sentDate;
         this.message = message;
-        this.attachments = attachments;
+        this.attachment = attachment;
     }
 
     public Mail(int id, boolean seen, String from, String subject, String sentDate, String message) {
@@ -29,7 +29,7 @@ public class Mail {
         this.subject = subject;
         this.sentDate = sentDate;
         this.message = message;
-        this.attachments = null;
+        this.attachment = null;
     }
 
     @Override
@@ -91,11 +91,11 @@ public class Mail {
         this.message = message;
     }
 
-    public ArrayList<File> getAttachments() {
-        return attachments;
+    public File getAttachments() {
+        return attachment;
     }
 
-    public void setAttachments(ArrayList<File> attachments) {
-        this.attachments = attachments;
+    public void setAttachments(File attachment) {
+        this.attachment = attachment;
     }
 }

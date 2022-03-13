@@ -1,5 +1,6 @@
 package client.controller;
 
+import client.model.encryption.PublicParameters;
 import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import javafx.event.ActionEvent;
@@ -71,11 +72,13 @@ public class LoginController {
             this.clientApp.setUser(user);
             this.clientApp.showMailsOverview();
             getSecretKey(user);
+            getPublicParams();
         }
     }
 
     private void getSecretKey(User user) {
         try {
+            System.out.println("--------------------------");
             System.out.println("Fetching secret key...");
             URL url = new URL("http://" + ConfigManager.getConfigItem("IP") + ":" +
                     ConfigManager.getConfigItem("PORT") + "/key");
@@ -87,18 +90,65 @@ public class LoginController {
             System.out.println("Sending username");
             out.write(user.getUsername().getBytes());
 
-            InputStream is = urlConn.getInputStream();
-            byte[] fileBytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
-            is.read(fileBytes);
             Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
 
-            Element k = pairing.getG1().newElementFromBytes(fileBytes);
+            InputStream is = urlConn.getInputStream();
+            byte[] sKBytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
+            is.read(sKBytes);
+            Element sk = pairing.getG1().newElementFromBytes(sKBytes);
+            System.out.println("sk : "+sk);
 
-            System.out.println("sk : "+k);
+            this.clientApp.getUser().setsK(sk);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getPublicParams() {
+        try {
+            System.out.println("--------------------------");
+            System.out.println("Fetching public params...");
+            URL url = new URL("http://" + ConfigManager.getConfigItem("IP") + ":" +
+                    ConfigManager.getConfigItem("PORT") + "/publicparams");
+
+            URLConnection urlConn = url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+
+            Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+
+            InputStream is = urlConn.getInputStream();
+            byte[] filebytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
+            is.read(filebytes);
+            is.close();
+
+            FileOutputStream fos = new FileOutputStream("deserialized.txt");
+            fos.write(filebytes);
+            fos.close();
+
+            FileInputStream fis = new FileInputStream("deserialized.txt");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            PublicParameters publicParams = (PublicParameters) ois.readObject();
+            ois.close();
+            fis.close();
+
+            Element p_pub = pairing.getG1().newElementFromBytes(publicParams.getP_pub());
+            Element p = pairing.getG1().newElementFromBytes(publicParams.getP());
+
+            this.clientApp.setP_pub(p_pub);
+            this.clientApp.setP_pub(p);
+
+            System.out.println("p : " + p);
+            System.out.println("p_pub : " + p_pub);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

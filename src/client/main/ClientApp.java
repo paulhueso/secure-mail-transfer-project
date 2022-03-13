@@ -5,6 +5,7 @@ import java.io.IOException;
 import client.controller.GeneralViewController;
 import client.controller.LoginController;
 import client.controller.SendMailController;
+import it.unisa.dia.gas.jpbc.Element;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,6 +16,8 @@ import client.model.User;
 
 public class ClientApp extends Application {
     private User user;
+    private Element p_pub;
+    private Element p;
 
     private Stage primaryStage;
     private BorderPane rootLayout;
@@ -104,6 +107,22 @@ public class ClientApp extends Application {
         return user;
     }
 
+    public Element getP_pub() {
+        return p_pub;
+    }
+
+    public void setP_pub(Element p_pub) {
+        this.p_pub = p_pub;
+    }
+
+    public Element getP() {
+        return p;
+    }
+
+    public void setP(Element p) {
+        this.p = p;
+    }
+
     /**
      * Returns the client.main stage.
      * @return
@@ -111,6 +130,8 @@ public class ClientApp extends Application {
     public Stage getPrimaryStage() {
         return primaryStage;
     }
+
+
 
     public static void main(String[] args) {
         launch(args);

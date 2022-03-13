@@ -28,7 +28,7 @@ public class IBEBasicIdent {
 
         Element p_pub=p.duplicate().mulZn(msk); // calcule de la clef publique du système
 
-        return new SettingParameters(p, p_pub, msk); //instanciation d'un objet comportant les parametres du système
+        return new SettingParameters(new PublicParameters(p.toBytes(), p_pub.toBytes()), msk); //instanciation d'un objet comportant les parametres du système
     }
 
     public static KeyPair keygen(Pairing pairing,Element msk, String id) throws NoSuchAlgorithmException{
