@@ -101,14 +101,6 @@ public class GeneralViewController {
         WebEngine engine = mailContent.getEngine();
         engine.loadContent(selectedMail.getMessage());
 
-        ArrayList<File> attachments = selectedMail.getAttachments();
-
-        if(attachments == null || attachments.isEmpty()){
-            nbAttachments.setText("No");
-        } else {
-            downloadBtn.setVisible(true);
-            nbAttachments.setText(String.valueOf(attachments.size()));
-        }
     }
 
     @FXML
