@@ -7,19 +7,19 @@ This is done using the Identity Based Encrypton.
 ## Project tree
 ```bash
 .
-├── README.md
-├── jars 
-│   ├── javax.mail-1.6.2.jar
-│   └── jpbc-2.0.0
-│  
-├── secure-mail-transfer-project.iml
-├── src
-│   ├── client.controller # controllers to link JavaFX layout to functions
-│   ├── client.main # client.main functions
-│   ├── client.model # all classes
-│   └── view # all .fxml files
-└── static
-    └── attachment.txt
+├── client
+│   ├── controller # link with resources.fxml
+│   ├── main # Main client App
+│   └── model # All classes used
+│       └── encryption # Classes used to encrypt attachments
+├── resources
+│   ├── fxml # Client layout   
+│   └── img # images used in fxml
+├── server # Server which generates keys
+└── utilities
+    ├── config # Config files
+    └── curves # Curves used in jpbc
+
 ```
 
 ## Jars recquired
