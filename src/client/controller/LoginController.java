@@ -1,5 +1,7 @@
 package client.controller;
 
+import it.unisa.dia.gas.jpbc.Pairing;
+import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -10,6 +12,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import client.main.ClientApp;
 import client.model.User;
+
+import it.unisa.dia.gas.jpbc.Element;
+import utilities.config.ConfigManager;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class LoginController {
 
@@ -42,7 +52,7 @@ public class LoginController {
 
     @FXML
     private void handleLoginKeyEvent(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER) {
+        if (event.getCode() == KeyCode.ENTER) {
             login();
         }
     }
@@ -57,8 +67,39 @@ public class LoginController {
             alert.setContentText("Fill out blanks");
             alert.showAndWait();
         } else {
-            this.clientApp.setUser(new User(mail, password));
+            User user = new User(mail, password);
+            this.clientApp.setUser(user);
             this.clientApp.showMailsOverview();
+            getSecretKey(user);
+        }
+    }
+
+    private void getSecretKey(User user) {
+        try {
+            System.out.println("Fetching secret key...");
+            URL url = new URL("http://" + ConfigManager.getConfigItem("IP") + ":" +
+                    ConfigManager.getConfigItem("PORT") + "/key");
+
+            URLConnection urlConn = url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            OutputStream out = urlConn.getOutputStream();
+            System.out.println("Sending username");
+            out.write(user.getUsername().getBytes());
+
+            InputStream is = urlConn.getInputStream();
+            byte[] fileBytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
+            is.read(fileBytes);
+            Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+
+            Element k = pairing.getG1().newElementFromBytes(fileBytes);
+
+            System.out.println("sk : "+k);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

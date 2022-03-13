@@ -1,4 +1,4 @@
-package utilities;
+package utilities.config;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Utilities {
+public class ConfigManager {
     private static final String CONFIG_FILE_NAME = "config.txt";
     private static final String FIELD_SEPARATOR = "=";
     private static Map<String, String> CONFIG;
