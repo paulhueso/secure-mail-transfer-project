@@ -1,5 +1,6 @@
 package client.controller;
 
+import client.model.User;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -83,8 +84,8 @@ public class GeneralViewController {
 
     private void loadMails(String username, String password) throws GeneralSecurityException {
         System.out.println("Fetching emails...");
-        ObservableList<Mail> mailList = Mailsendreceivetest.downloadEmails(username, password);
-        mailTable.setItems(mailList);
+        //ObservableList<Mail> mailList = Mailsendreceivetest.downloadEmails(username, password);
+        //mailTable.setItems(mailList);
         System.out.println("Done !");
     }
 

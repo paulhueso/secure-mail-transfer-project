@@ -81,20 +81,20 @@ public class IBEBasicIdent {
         byte[] Aescipher=AESCrypto.encrypt(String.valueOf(message), aeskey.toBytes());  // chiffrement AES
         //byte[] Aescipher=AESCrypto.encrypt(message, aeskey.toBytes());  // chiffrement AES
 
-        return new IBECipher(U, V, Aescipher); //instaciation d'un objet representant un ciphertext hybride combinant (BasicID et AES)
+        return new IBECipher(U.toBytes(), V, Aescipher); //instaciation d'un objet representant un ciphertext hybride combinant (BasicID et AES)
     }
 
 
 
-    public static String IBEdecryption(Pairing pairing, Element generator, Element p_pub, Element sk, IBECipher C) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
+    public static byte[] IBEdecryption(Pairing pairing, Element generator, Element p_pub, Element sk, IBECipher C) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
         //Déchiffrement IBE
 
-        Element pairingresult=pairing.pairing(sk, C.getU()); //e(d_id,U) dans le slide du cours avec d_id= la clef  privée de l'utilisateur
+        Element pairingresult=pairing.pairing(sk, pairing.getG1().newElementFromBytes(C.getU())); //e(d_id,U) dans le slide du cours avec d_id= la clef  privée de l'utilisateur
 
         byte[] resultingAeskey=Xor(C.getV(), pairingresult.toBytes());  // V xor H_2(e(d_id,U))=K avec K est la clef symmetrique AES
 
-        String resultingdecryptionbytes =AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
-        //        byte[] resultingdecryptionbytes =AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
+        //String resultingdecryptionbytes =AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
+        byte[] resultingdecryptionbytes = AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
         return resultingdecryptionbytes; //retourner le résultat du déchiffrement= plaintext si le déchiffement a été fait avec succès
     }
 

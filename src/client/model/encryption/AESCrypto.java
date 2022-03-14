@@ -5,6 +5,7 @@ package client.model.encryption;/*
  */
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,7 +39,7 @@ public class AESCrypto {
     }
 
 
-    public static String decrypt(byte[] ciphertext, byte[] key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
+    public static byte[] decrypt(byte[] ciphertext, byte[] key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
         Cipher cipher= Cipher.getInstance("AES/ECB/PKCS5Padding");
         MessageDigest digest=MessageDigest.getInstance("SHA1");
         digest.update(key);
@@ -47,7 +48,7 @@ public class AESCrypto {
         cipher.init(Cipher.DECRYPT_MODE, keyspec);
         String plaintext=new String(cipher.doFinal(Base64.getDecoder().decode(ciphertext)));
 
-        return plaintext;
+        return plaintext.getBytes(StandardCharsets.UTF_8);
 
     }
 

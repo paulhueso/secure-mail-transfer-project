@@ -120,26 +120,28 @@ public class LoginController {
 
             Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
 
+            //Get file bytes
             InputStream is = urlConn.getInputStream();
             byte[] filebytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
             is.read(filebytes);
             is.close();
 
+            //Write file bytes in file
             FileOutputStream fos = new FileOutputStream("deserialized.txt");
             fos.write(filebytes);
             fos.close();
 
+            //Deserialize file in object
             FileInputStream fis = new FileInputStream("deserialized.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
             PublicParameters publicParams = (PublicParameters) ois.readObject();
             ois.close();
             fis.close();
 
+            this.clientApp.setPp(publicParams);
+
             Element p_pub = pairing.getG1().newElementFromBytes(publicParams.getP_pub());
             Element p = pairing.getG1().newElementFromBytes(publicParams.getP());
-
-            this.clientApp.setP_pub(p_pub);
-            this.clientApp.setP_pub(p);
 
             System.out.println("p : " + p);
             System.out.println("p_pub : " + p_pub);
