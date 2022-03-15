@@ -8,7 +8,11 @@ package client.model.encryption;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
+import it.unisa.dia.gas.plaf.jpbc.util.io.Base64;
+import jdk.jshell.execution.Util;
+import utilities.config.ConfigManager;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -22,12 +26,19 @@ import javax.crypto.NoSuchPaddingException;
  */
 public class IBEBasicIdent {
 
-    public static SettingParameters setup(Pairing pairing){ // setup phase
+    public static Element getMSK(Pairing pairing) throws IOException {
+        if (!ConfigManager.hasKey("MSK")) {
+            Element e = pairing.getZr().newRandomElement();
+            ConfigManager.putConfigItem("MSK", Base64.encodeBytes(e.toBytes()));
+        }
+        return pairing.getZr().newElementFromBytes(Base64.decode(ConfigManager.getConfigItem("MSK")));
+    }
+
+    public static SettingParameters setup(Pairing pairing) throws IOException { // setup phase
 
         Element p=pairing.getG1().newRandomElement(); // choix d'un générateur
 
-        Element msk=pairing.getZr().newRandomElement(); //choix de la clef du maitre
-
+        Element msk=getMSK(pairing); //choix de la clef du maitre
         Element p_pub=p.duplicate().mulZn(msk); // calcule de la clef publique du système
 
         return new SettingParameters(new PublicParameters(p.toBytes(), p_pub.toBytes()), msk); //instanciation d'un objet comportant les parametres du système
@@ -93,7 +104,6 @@ public class IBEBasicIdent {
         
         //String resultingdecryptionbytes =AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
         byte[] resultingdecryptionbytes = AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
-
         return resultingdecryptionbytes; //retourner le résultat du déchiffrement= plaintext si le déchiffement a été fait avec succès
     }
 

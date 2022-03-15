@@ -13,6 +13,7 @@ import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import client.model.encryption.IBEBasicIdent;
 import client.model.encryption.KeyPair;
 import client.model.encryption.SettingParameters;
+import utilities.config.ConfigManager;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -45,6 +46,11 @@ class ServerHttp {
               
             HttpServer server = HttpServer.create(s, 1000);
             System.out.println(server.getAddress());
+            String ip = server.getAddress().toString();
+            ip = ip.substring(1, ip.length() - 5); // This trims first "/" and port
+            if (!ip.equals(ConfigManager.getConfigItem("IP"))) { // Set the server IP in the config
+                ConfigManager.putConfigItem("IP", ip);
+            }
             server.createContext("/key", new HttpHandler()
             {
                 public void handle(HttpExchange he) throws IOException {
