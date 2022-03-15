@@ -8,20 +8,29 @@ package client.model;/*
  *
  * @author imino
  */
+import client.model.encryption.IBEBasicIdent;
+import client.model.encryption.IBECipher;
+import client.model.encryption.PublicParameters;
 import com.sun.mail.util.MailSSLSocketFactory;
+import it.unisa.dia.gas.jpbc.Pairing;
+import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.IOException;
+import java.io.*;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Properties;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
-import java.io.File;
 import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Multipart;
@@ -69,7 +78,8 @@ public class Mailsendreceivetest{
 
     }
 
-    public static void sendmessagewithattachement(User sender, String destination, String content, String subject, ArrayList<File> attachments) throws GeneralSecurityException {
+    public static void sendmessagewithattachement(User sender, String destination, String content, String subject,
+                                                  ArrayList<File> attachments, PublicParameters publicParam) throws GeneralSecurityException {
         Properties properties = new Properties();
 
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
@@ -88,30 +98,30 @@ public class Mailsendreceivetest{
         });
         System.out.println("session.getProviders():"+session.getProviders()[0].getType());
         try{
-            MimeMessage message=new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(sender.getUsername());
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
             message.setSubject(subject);
 
-            Multipart myemailcontent=new MimeMultipart();
-            MimeBodyPart bodypart=new MimeBodyPart();
+            Multipart myemailcontent = new MimeMultipart();
+            MimeBodyPart bodypart = new MimeBodyPart();
             bodypart.setText(content);
 
-
-
-            MimeBodyPart attachementfiles=new MimeBodyPart();
+            MimeBodyPart attachmentfiles = new MimeBodyPart();
             attachments.forEach(file -> {
+                File encryptedFile = encryptFile(file, publicParam, sender);
                 try {
-                    attachementfiles.attachFile(file);
+                    attachmentfiles.attachFile(encryptedFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 }
+
             });
 
             myemailcontent.addBodyPart(bodypart);
-            myemailcontent.addBodyPart(attachementfiles);
+            myemailcontent.addBodyPart(attachmentfiles);
             message.setContent(myemailcontent);
             Transport.send(message);
 
@@ -124,7 +134,7 @@ public class Mailsendreceivetest{
 
 
 
-    public static ObservableList<Mail> downloadEmails(String userName, String password) throws GeneralSecurityException {
+    public static ObservableList<Mail> downloadEmails(User user, PublicParameters publicParameters) throws GeneralSecurityException {
         ObservableList<Mail> mails = FXCollections.observableArrayList();
         Properties properties = new Properties();
 
@@ -149,7 +159,7 @@ public class Mailsendreceivetest{
             //     Store store = session.getStore("pop3");
             Store store = session.getStore("imap");
 
-            store.connect(userName, password);
+            store.connect(user.getUsername(), user.getPassword());
 
             // opens the inbox folder
             Folder folderInbox = store.getFolder("INBOX");
@@ -179,7 +189,9 @@ public class Mailsendreceivetest{
                             // this part is attachment
                             String fileName = part.getFileName();
                             attachFiles += fileName + ", ";
-                            part.saveFile(fileName); // le dossier Myfiles à créer dans votre projet
+
+                            decryptFile(part, publicParameters, user);
+
 
                         } else {
                             // this part may be the message content
@@ -215,8 +227,75 @@ public class Mailsendreceivetest{
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
         return mails;
     }
 
+    private static File encryptFile(File file, PublicParameters publicParam, User sender) {
+        File encryptedFile = new File("encryptedFile.txt");
+
+        try {
+            //file to byte[]
+            FileInputStream fis = new FileInputStream(file);
+            byte[] filebytes = new byte[fis.available()];
+            fis.read(filebytes);
+            fis.close();
+
+            System.out.println(String.valueOf(filebytes));
+            Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+            IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, sender.getUsername()); // chiffrement BasicID-IBE/AES
+            //Serialized
+            FileOutputStream fos = new FileOutputStream(encryptedFile);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(ibecipher);
+            oos.close();
+            fos.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return encryptedFile;
+    }
+
+    private static void decryptFile(MimeBodyPart part, PublicParameters publicParam, User user) throws MessagingException, IOException, ClassNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+
+        //Save EncryptedFile
+        String filename = part.getFileName();
+        part.saveFile(filename+"_serialized");
+
+        //Deserialize IBECipher
+        FileInputStream fis = new FileInputStream(filename+"_serialized");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        IBECipher cipher = (IBECipher) ois.readObject();
+        ois.close();
+        fis.close();
+
+        Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+
+        //Decrypt
+        byte[] resulting_bytes = IBEBasicIdent.IBEdecryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), user.getsK(), cipher); //déchiffrment Basic-ID IBE/AES
+        /*for (byte b : resulting_bytes) {
+            System.out.print(b+",");
+        }
+        System.out.println(); */
+        File f = new File("decryptionresult.txt"); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
+        f.createNewFile();
+        FileOutputStream fout = new FileOutputStream(f);
+        fout.write(resulting_bytes); // ecriture du résultat de déchiffrement dans le fichier
+        fout.close();
+    }
 }

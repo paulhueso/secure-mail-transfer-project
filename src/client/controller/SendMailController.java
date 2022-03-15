@@ -79,7 +79,7 @@ public class SendMailController {
             if(attachments.isEmpty()) Mailsendreceivetest.sendmessage(this.clientApp.getUser(), this.toInput.getText(),
                     this.mailContent.getText(), this.subjectInput.getText());
             else Mailsendreceivetest.sendmessagewithattachement(this.clientApp.getUser(), this.toInput.getText(),
-                    this.mailContent.getText(), this.subjectInput.getText(), this.attachments);
+                    this.mailContent.getText(), this.subjectInput.getText(), this.attachments, this.clientApp.getPp());
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }

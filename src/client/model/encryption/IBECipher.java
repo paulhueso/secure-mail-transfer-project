@@ -7,19 +7,21 @@ package client.model.encryption;
 
 import it.unisa.dia.gas.jpbc.Element;
 
+import java.io.Serializable;
+
 /**
  *
  * @author imino
  */
-public class IBECipher {
+public class IBECipher implements Serializable {
 
-    private Element U; // rP (vu dans le cours)
+    private byte[] U; // rP (vu dans le cours)
 
     byte[] V; // K xor e(Q_id,P_pub) avec K la clef symmetrique AES
 
     byte[] Aescipher; // résultat du chiffrement avec AES
 
-    public IBECipher(Element U, byte[] V, byte[] Aescipher) {
+    public IBECipher(byte[] U, byte[] V, byte[] Aescipher) {
         this.U = U;
         this.V = V;
         this.Aescipher = Aescipher;
@@ -29,7 +31,7 @@ public class IBECipher {
         return Aescipher;
     }
 
-    public Element getU() {
+    public byte[] getU() {
         return U;
     }
 

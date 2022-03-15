@@ -5,6 +5,7 @@ import java.io.IOException;
 import client.controller.GeneralViewController;
 import client.controller.LoginController;
 import client.controller.SendMailController;
+import client.model.encryption.PublicParameters;
 import it.unisa.dia.gas.jpbc.Element;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +17,7 @@ import client.model.User;
 
 public class ClientApp extends Application {
     private User user;
-    private Element p_pub;
-    private Element p;
+    private PublicParameters pp;
 
     private Stage primaryStage;
     private BorderPane rootLayout;
@@ -107,20 +107,12 @@ public class ClientApp extends Application {
         return user;
     }
 
-    public Element getP_pub() {
-        return p_pub;
+    public PublicParameters getPp() {
+        return pp;
     }
 
-    public void setP_pub(Element p_pub) {
-        this.p_pub = p_pub;
-    }
-
-    public Element getP() {
-        return p;
-    }
-
-    public void setP(Element p) {
-        this.p = p;
+    public void setPp(PublicParameters pp) {
+        this.pp = pp;
     }
 
     /**
