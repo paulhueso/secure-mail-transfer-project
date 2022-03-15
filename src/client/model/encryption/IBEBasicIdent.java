@@ -7,6 +7,8 @@ package client.model.encryption;
 
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
+import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -69,17 +71,17 @@ public class IBEBasicIdent {
 
         Element pairingresult=pairing.pairing(Q_id, p_pub); //e(Q_id,P_pub) dans le slide du cours
 
-        System.out.println("before pairing result:"+pairingresult);
-
+        //System.out.println("before pairing result:"+pairingresult);
 
         pairingresult.powZn(r);
 
-        System.out.println("after pairing result:"+pairingresult);
-
+        //System.out.println("after pairing result:"+pairingresult);
         byte[] V=Xor(aeskey.toBytes(), pairingresult.toBytes()); //K xor e(Q_id,P_pub)^r
 
-        byte[] Aescipher=AESCrypto.encrypt(String.valueOf(message), aeskey.toBytes());  // chiffrement AES
+        byte[] Aescipher=AESCrypto.encrypt(message, aeskey.toBytes());  // chiffrement AES
         //byte[] Aescipher=AESCrypto.encrypt(message, aeskey.toBytes());  // chiffrement AES
+        System.out.println("keyE: "+aeskey);
+        System.out.println("CipherE: "+pairing.getG1().newElementFromBytes(Aescipher));
 
         return new IBECipher(U.toBytes(), V, Aescipher); //instaciation d'un objet representant un ciphertext hybride combinant (BasicID et AES)
     }
@@ -88,13 +90,14 @@ public class IBEBasicIdent {
 
     public static byte[] IBEdecryption(Pairing pairing, Element generator, Element p_pub, Element sk, IBECipher C) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
         //Déchiffrement IBE
+        Element pairingresult = pairing.pairing(sk, pairing.getG1().newElementFromBytes(C.getU())); //e(d_id,U) dans le slide du cours avec d_id= la clef  privée de l'utilisateur
+        byte[] resultingAeskey = Xor(C.getV(), pairingresult.toBytes());  // V xor H_2(e(d_id,U))=K avec K est la clef symmetrique AES
 
-        Element pairingresult=pairing.pairing(sk, pairing.getG1().newElementFromBytes(C.getU())); //e(d_id,U) dans le slide du cours avec d_id= la clef  privée de l'utilisateur
-
-        byte[] resultingAeskey=Xor(C.getV(), pairingresult.toBytes());  // V xor H_2(e(d_id,U))=K avec K est la clef symmetrique AES
-
+        System.out.println("keyD: "+pairing.getG1().newElementFromBytes(resultingAeskey));
+        System.out.println("CipherD: "+pairing.getG1().newElementFromBytes(C.getAescipher()));
         //String resultingdecryptionbytes =AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
         byte[] resultingdecryptionbytes = AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
+
         return resultingdecryptionbytes; //retourner le résultat du déchiffrement= plaintext si le déchiffement a été fait avec succès
     }
 

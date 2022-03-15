@@ -235,7 +235,7 @@ public class Mailsendreceivetest{
     }
 
     private static File encryptFile(File file, PublicParameters publicParam, User sender) {
-        File encryptedFile = new File("encryptedFile");
+        File encryptedFile = new File("encryptedFile.txt");
 
         try {
             //file to byte[]
@@ -244,14 +244,15 @@ public class Mailsendreceivetest{
             fis.read(filebytes);
             fis.close();
 
+            System.out.println(String.valueOf(filebytes));
             Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
             IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, sender.getUsername()); // chiffrement BasicID-IBE/AES
-            //System.out.println("cipher encrypt : "+pairing.getG1().newElementFromBytes(ibecipher.getAescipher()));
-
             //Serialized
-            FileOutputStream fos = new FileOutputStream(encryptedFile); //check si ca marche avec null
+            FileOutputStream fos = new FileOutputStream(encryptedFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(ibecipher);
+            oos.close();
+            fos.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -270,8 +271,7 @@ public class Mailsendreceivetest{
         return encryptedFile;
     }
 
-    private static File decryptFile(MimeBodyPart part, PublicParameters publicParam, User user) throws MessagingException, IOException, ClassNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        File decryptedFile = new File("decryptedFile");
+    private static void decryptFile(MimeBodyPart part, PublicParameters publicParam, User user) throws MessagingException, IOException, ClassNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
 
         //Save EncryptedFile
         String filename = part.getFileName();
@@ -281,18 +281,21 @@ public class Mailsendreceivetest{
         FileInputStream fis = new FileInputStream(filename+"_serialized");
         ObjectInputStream ois = new ObjectInputStream(fis);
         IBECipher cipher = (IBECipher) ois.readObject();
+        ois.close();
+        fis.close();
 
         Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
 
-        //System.out.println("cipher : "+pairing.getG1().newElementFromBytes(cipher.getAescipher()));
-
         //Decrypt
         byte[] resulting_bytes = IBEBasicIdent.IBEdecryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), user.getsK(), cipher); //déchiffrment Basic-ID IBE/AES
-        File f = new File("decryptionresult" + filename.substring(filename.lastIndexOf("."))); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
+        /*for (byte b : resulting_bytes) {
+            System.out.print(b+",");
+        }
+        System.out.println(); */
+        File f = new File("decryptionresult.txt"); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
         f.createNewFile();
         FileOutputStream fout = new FileOutputStream(f);
         fout.write(resulting_bytes); // ecriture du résultat de déchiffrement dans le fichier
-
-        return decryptedFile;
+        fout.close();
     }
 }
