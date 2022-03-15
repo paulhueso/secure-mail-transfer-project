@@ -97,7 +97,6 @@ public class LoginController {
             byte[] sKBytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
             is.read(sKBytes);
             Element sk = pairing.getG1().newElementFromBytes(sKBytes);
-            //System.out.println("sk : "+sk);
 
             this.clientApp.getUser().setsK(sk);
 
@@ -111,7 +110,7 @@ public class LoginController {
     private void getPublicParams() {
         try {
             //System.out.println("--------------------------");
-            //System.out.println("Fetching public params...");
+            System.out.println("Fetching public params...");
             URL url = new URL("http://" + ConfigManager.getConfigItem("IP") + ":" +
                     ConfigManager.getConfigItem("PORT") + "/publicparams");
 
@@ -127,25 +126,25 @@ public class LoginController {
             is.read(filebytes);
             is.close();
 
+            File deserialized = new File("deserialized.txt");
+
             //Write file bytes in file
-            FileOutputStream fos = new FileOutputStream("deserialized.txt");
+            FileOutputStream fos = new FileOutputStream(deserialized);
             fos.write(filebytes);
             fos.close();
 
             //Deserialize file in object
-            FileInputStream fis = new FileInputStream("deserialized.txt");
+            FileInputStream fis = new FileInputStream(deserialized);
             ObjectInputStream ois = new ObjectInputStream(fis);
             PublicParameters publicParams = (PublicParameters) ois.readObject();
             ois.close();
             fis.close();
 
+            deserialized.delete();
+
             this.clientApp.setPp(publicParams);
 
-            Element p_pub = pairing.getG1().newElementFromBytes(publicParams.getP_pub());
-            Element p = pairing.getG1().newElementFromBytes(publicParams.getP());
-
-            //System.out.println("p : " + p);
-            //System.out.println("p_pub : " + p_pub);
+            System.out.println("System params fetched !");
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

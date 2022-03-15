@@ -83,18 +83,21 @@ class ServerHttp {
                 public void handle(HttpExchange he) throws IOException {
                     System.out.println("............................");
 
+                    File serialized = new File("serialized.txt");
+
                     //Serialization
-                    FileOutputStream fos = new FileOutputStream("serialized.txt");
+                    FileOutputStream fos = new FileOutputStream(serialized);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                     oos.writeObject(sp.getPublicParams());
                     oos.close();
                     fos.close();
 
                     //Binary read to send through response
-                    FileInputStream fis = new FileInputStream("serialized.txt");
+                    FileInputStream fis = new FileInputStream(serialized);
                     byte[] filebytes = new byte[fis.available()];
                     fis.read(filebytes);
                     fis.close();
+
 
                     //Response
                     he.sendResponseHeaders(200, filebytes.length);
@@ -102,6 +105,9 @@ class ServerHttp {
                     os.write(filebytes);
                     System.out.println("sending response done....");
                     os.close();
+
+                    serialized.delete();
+
                 }
             });
 

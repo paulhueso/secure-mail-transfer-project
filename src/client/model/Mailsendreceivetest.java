@@ -235,7 +235,7 @@ public class Mailsendreceivetest{
     }
 
     private static File encryptFile(File file, PublicParameters publicParam, User sender) {
-        File encryptedFile = new File("encryptedFile.txt");
+        File encryptedFile = new File(file.getName());
 
         try {
             //file to byte[]
@@ -244,9 +244,9 @@ public class Mailsendreceivetest{
             fis.read(filebytes);
             fis.close();
 
-            System.out.println(String.valueOf(filebytes));
             Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
             IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, sender.getUsername()); // chiffrement BasicID-IBE/AES
+
             //Serialized
             FileOutputStream fos = new FileOutputStream(encryptedFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -275,24 +275,24 @@ public class Mailsendreceivetest{
 
         //Save EncryptedFile
         String filename = part.getFileName();
-        part.saveFile(filename+"_serialized");
+        part.saveFile("encryptedFileD");
 
         //Deserialize IBECipher
-        FileInputStream fis = new FileInputStream(filename+"_serialized");
+        FileInputStream fis = new FileInputStream("encryptedFileD");
         ObjectInputStream ois = new ObjectInputStream(fis);
         IBECipher cipher = (IBECipher) ois.readObject();
         ois.close();
         fis.close();
 
+        File toDelete = new File("encryptedFileD");
+        toDelete.delete();
+
         Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
 
         //Decrypt
         byte[] resulting_bytes = IBEBasicIdent.IBEdecryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), user.getsK(), cipher); //déchiffrment Basic-ID IBE/AES
-        /*for (byte b : resulting_bytes) {
-            System.out.print(b+",");
-        }
-        System.out.println(); */
-        File f = new File("decryptionresult.txt"); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
+
+        File f = new File(filename); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
         f.createNewFile();
         FileOutputStream fout = new FileOutputStream(f);
         fout.write(resulting_bytes); // ecriture du résultat de déchiffrement dans le fichier

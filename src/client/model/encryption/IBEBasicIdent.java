@@ -80,8 +80,6 @@ public class IBEBasicIdent {
 
         byte[] Aescipher=AESCrypto.encrypt(message, aeskey.toBytes());  // chiffrement AES
         //byte[] Aescipher=AESCrypto.encrypt(message, aeskey.toBytes());  // chiffrement AES
-        System.out.println("keyE: "+aeskey);
-        System.out.println("CipherE: "+pairing.getG1().newElementFromBytes(Aescipher));
 
         return new IBECipher(U.toBytes(), V, Aescipher); //instaciation d'un objet representant un ciphertext hybride combinant (BasicID et AES)
     }
@@ -92,9 +90,7 @@ public class IBEBasicIdent {
         //Déchiffrement IBE
         Element pairingresult = pairing.pairing(sk, pairing.getG1().newElementFromBytes(C.getU())); //e(d_id,U) dans le slide du cours avec d_id= la clef  privée de l'utilisateur
         byte[] resultingAeskey = Xor(C.getV(), pairingresult.toBytes());  // V xor H_2(e(d_id,U))=K avec K est la clef symmetrique AES
-
-        System.out.println("keyD: "+pairing.getG1().newElementFromBytes(resultingAeskey));
-        System.out.println("CipherD: "+pairing.getG1().newElementFromBytes(C.getAescipher()));
+        
         //String resultingdecryptionbytes =AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
         byte[] resultingdecryptionbytes = AESCrypto.decrypt(C.getAescipher(), resultingAeskey); // déchiffrement AES
 
