@@ -81,7 +81,7 @@ public class LoginController {
         try {
             System.out.println("--------------------------");
             System.out.println("Fetching secret key...");
-            URL url = new URL("http://" + ConfigManager.getConfigItem("IP") + ":" +
+            URL url = new URL(ConfigManager.getConfigItem("PROTOCOL") + "://" + ConfigManager.getConfigItem("IP") + ":" +
                     ConfigManager.getConfigItem("PORT") + "/key");
 
             URLConnection urlConn = url.openConnection();
@@ -111,7 +111,7 @@ public class LoginController {
         try {
             //System.out.println("--------------------------");
             System.out.println("Fetching public params...");
-            URL url = new URL("http://" + ConfigManager.getConfigItem("IP") + ":" +
+            URL url = new URL(ConfigManager.getConfigItem("PROTOCOL") + "://" + ConfigManager.getConfigItem("IP") + ":" +
                     ConfigManager.getConfigItem("PORT") + "/publicparams");
 
             URLConnection urlConn = url.openConnection();
