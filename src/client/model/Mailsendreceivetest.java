@@ -23,6 +23,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Random;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -73,8 +74,7 @@ public class Mailsendreceivetest{
             Transport.send(message);
             System.out.println("Mail sent !");
 
-        } catch (NoSuchProviderException e) {e.printStackTrace();}
-        catch (MessagingException e) {e.printStackTrace();}
+        } catch (MessagingException e) {e.printStackTrace();}
 
     }
 
@@ -109,12 +109,10 @@ public class Mailsendreceivetest{
 
             MimeBodyPart attachmentfiles = new MimeBodyPart();
             attachments.forEach(file -> {
-                File encryptedFile = encryptFile(file, publicParam, sender);
+                File encryptedFile = encryptFile(file, publicParam, destination);
                 try {
                     attachmentfiles.attachFile(encryptedFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (MessagingException e) {
+                } catch (IOException | MessagingException e) {
                     e.printStackTrace();
                 }
 
@@ -127,8 +125,7 @@ public class Mailsendreceivetest{
 
             System.out.println("Mail sent!");
 
-        } catch (NoSuchProviderException e) {e.printStackTrace();}
-        catch (MessagingException e) {e.printStackTrace();}
+        } catch (MessagingException e) {e.printStackTrace();}
 
     }
 
@@ -188,7 +185,6 @@ public class Mailsendreceivetest{
                         if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
                             // this part is attachment
                             String fileName = part.getFileName();
-                            attachFiles += fileName + ", ";
 
                             decryptFile(part, publicParameters, user);
 
@@ -225,17 +221,17 @@ public class Mailsendreceivetest{
         } catch (MessagingException ex) {
             System.out.println("Could not connect to the message store");
             ex.printStackTrace();
-        } catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return mails;
     }
 
-    private static File encryptFile(File file, PublicParameters publicParam, User sender) {
-        File encryptedFile = new File(file.getName());
+    private static File encryptFile(File file, PublicParameters publicParam, String destination) {
+    	String filename = file.getName();
+        String[] tabfilename = filename.split("\\.");
+        File encryptedFile = new File("encrypt/"+tabfilename[0]+(new Random().nextInt(1000))+"."+tabfilename[1]);
 
         try {
             //file to byte[]
@@ -245,7 +241,8 @@ public class Mailsendreceivetest{
             fis.close();
 
             Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
-            IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, sender.getCredentials().getUsername()); // chiffrement BasicID-IBE/AES
+
+            IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, destination); // chiffrement BasicID-IBE/AES
 
             //Serialized
             FileOutputStream fos = new FileOutputStream(encryptedFile);
@@ -254,17 +251,7 @@ public class Mailsendreceivetest{
             oos.close();
             fos.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
+        } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
             e.printStackTrace();
         }
 
@@ -275,24 +262,23 @@ public class Mailsendreceivetest{
 
         //Save EncryptedFile
         String filename = part.getFileName();
-        part.saveFile("encryptedFileD");
+        String[] tabfilename = filename.split("\\.");
+        File encryptedFile = new File("decrypt/"+"encryptedFileD"+tabfilename[0]+(new Random().nextInt(1000))+"."+tabfilename[1]);
+        part.saveFile(encryptedFile);
 
         //Deserialize IBECipher
-        FileInputStream fis = new FileInputStream("encryptedFileD");
+        FileInputStream fis = new FileInputStream(encryptedFile);
         ObjectInputStream ois = new ObjectInputStream(fis);
         IBECipher cipher = (IBECipher) ois.readObject();
         ois.close();
         fis.close();
-
-        File toDelete = new File("encryptedFileD");
-        toDelete.delete();
 
         Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
 
         //Decrypt
         byte[] resulting_bytes = IBEBasicIdent.IBEdecryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), user.getsK(), cipher); //déchiffrment Basic-ID IBE/AES
 
-        File f = new File(filename); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
+        File f = new File("decrypt/"+filename); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
         f.createNewFile();
         FileOutputStream fout = new FileOutputStream(f);
         fout.write(resulting_bytes); // ecriture du résultat de déchiffrement dans le fichier

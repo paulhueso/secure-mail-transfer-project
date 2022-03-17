@@ -15,6 +15,8 @@ import java.io.Serializable;
  */
 public class IBECipher implements Serializable {
 
+    private static final long SerialVersionUID = 104564987;
+
     private byte[] U; // rP (vu dans le cours)
 
     byte[] V; // K xor e(Q_id,P_pub) avec K la clef symmetrique AES
