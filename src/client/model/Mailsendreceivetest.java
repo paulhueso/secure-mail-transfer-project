@@ -235,7 +235,9 @@ public class Mailsendreceivetest{
     }
 
     private static File encryptFile(File file, PublicParameters publicParam, String destination) {
-        File encryptedFile = new File("encrypt/"+file.getName()+(new Random().nextInt(1000)));
+    	String filename = file.getName();
+        String[] tabfilename = filename.split("\\.");
+        File encryptedFile = new File("encrypt/"+tabfilename[0]+(new Random().nextInt(1000))+"."+tabfilename[1]);
 
         try {
             //file to byte[]
@@ -275,7 +277,8 @@ public class Mailsendreceivetest{
 
         //Save EncryptedFile
         String filename = part.getFileName();
-        File encryptedFile = new File("decrypt/"+"encryptedFileD"+filename+(new Random().nextInt(1000)));
+        String[] tabfilename = filename.split("\\.");
+        File encryptedFile = new File("decrypt/"+"encryptedFileD"+tabfilename[0]+(new Random().nextInt(1000))+"."+tabfilename[1]);
         part.saveFile(encryptedFile);
 
         //Deserialize IBECipher
