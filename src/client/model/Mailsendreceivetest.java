@@ -60,13 +60,13 @@ public class Mailsendreceivetest{
         properties.put("mail.smtp.port", "587");
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(sender.getUsername(), sender.getPassword());
+                return new PasswordAuthentication(sender.getCredentials().getUsername(), sender.getCredentials().getPassword());
             }
         });
         System.out.println("session.getProviders():"+session.getProviders()[0].getType());
         try{
             MimeMessage message=new MimeMessage(session);
-            message.setFrom(sender.getUsername());
+            message.setFrom(sender.getCredentials().getUsername());
             message.setText(content);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
             message.setSubject(subject);
@@ -93,13 +93,13 @@ public class Mailsendreceivetest{
         properties.put("mail.smtp.port", "587");
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(sender.getUsername(),sender.getPassword());
+                return new PasswordAuthentication(sender.getCredentials().getUsername(),sender.getCredentials().getPassword());
             }
         });
         System.out.println("session.getProviders():"+session.getProviders()[0].getType());
         try{
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(sender.getUsername());
+            message.setFrom(sender.getCredentials().getUsername());
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
             message.setSubject(subject);
 
@@ -159,7 +159,7 @@ public class Mailsendreceivetest{
             //     Store store = session.getStore("pop3");
             Store store = session.getStore("imap");
 
-            store.connect(user.getUsername(), user.getPassword());
+            store.connect(user.getCredentials().getUsername(), user.getCredentials().getPassword());
 
             // opens the inbox folder
             Folder folderInbox = store.getFolder("INBOX");
@@ -245,7 +245,7 @@ public class Mailsendreceivetest{
             fis.close();
 
             Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
-            IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, sender.getUsername()); // chiffrement BasicID-IBE/AES
+            IBECipher ibecipher = IBEBasicIdent.IBEencryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), filebytes, sender.getCredentials().getUsername()); // chiffrement BasicID-IBE/AES
 
             //Serialized
             FileOutputStream fos = new FileOutputStream(encryptedFile);

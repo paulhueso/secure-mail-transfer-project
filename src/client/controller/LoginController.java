@@ -1,5 +1,7 @@
 package client.controller;
 
+import client.model.encryption.AESCrypto;
+import client.model.encryption.CryptedCredentials;
 import client.model.encryption.PublicParameters;
 import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
@@ -17,10 +19,15 @@ import client.model.User;
 import it.unisa.dia.gas.jpbc.Element;
 import utilities.config.ConfigManager;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 public class LoginController {
 
@@ -70,14 +77,16 @@ public class LoginController {
         } else {
             User user = new User(mail, password);
             this.clientApp.setUser(user);
-            getSecretKey(user);
             getPublicParams();
+            getSecretKey(user);
             this.clientApp.showMailsOverview();
 
         }
     }
 
     private void getSecretKey(User user) {
+        Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+        Element secretKey = pairing.getZr().newRandomElement();
         try {
             System.out.println("--------------------------");
             System.out.println("Fetching secret key...");
@@ -87,22 +96,20 @@ public class LoginController {
             URLConnection urlConn = url.openConnection();
             urlConn.setDoInput(true);
             urlConn.setDoOutput(true);
-            OutputStream out = urlConn.getOutputStream();
-            System.out.println("Sending username");
-            out.write(user.getUsername().getBytes());
-
-            Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
-
-            InputStream is = urlConn.getInputStream();
-            byte[] sKBytes = new byte[Integer.parseInt(urlConn.getHeaderField("Content-length"))];
-            is.read(sKBytes);
-            Element sk = pairing.getG1().newElementFromBytes(sKBytes);
-
-            this.clientApp.getUser().setsK(sk);
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            ObjectOutputStream out = new ObjectOutputStream(urlConn.getOutputStream());
+            System.out.println("Sending crypted credentials...");
+            CryptedCredentials cryptedCredentials = new CryptedCredentials(user.getCredentials());
+            byte[] AESKey = cryptedCredentials.encrypt(this.clientApp.getPp(), pairing, secretKey);
+            out.writeObject(cryptedCredentials);
+            int contentLength = Integer.parseInt(urlConn.getHeaderField("Content-length"));
+            if (contentLength > 0) {
+                InputStream is = urlConn.getInputStream();
+                byte[] cryptedSKBytes = new byte[contentLength];
+                is.read(cryptedSKBytes);
+                Element sk = pairing.getG1().newElementFromBytes(AESCrypto.decrypt(cryptedSKBytes, AESKey));
+                this.clientApp.getUser().setsK(sk);
+            }
+        } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
     }
