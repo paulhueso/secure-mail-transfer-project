@@ -185,7 +185,7 @@ public class Mailsendreceivetest{
                         if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
                             // this part is attachment
                             String fileName = part.getFileName();
-
+                            attachFiles += fileName + ", ";
                             decryptFile(part, publicParameters, user);
 
 
@@ -206,7 +206,7 @@ public class Mailsendreceivetest{
                     }
                 }
 
-                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent);
+                Mail mail = new Mail(i+1, message_seen, from, subject, sentDate, messageContent,attachFiles);
                 mails.add(mail);
 
             }
@@ -258,30 +258,49 @@ public class Mailsendreceivetest{
         return encryptedFile;
     }
 
-    private static void decryptFile(MimeBodyPart part, PublicParameters publicParam, User user) throws MessagingException, IOException, ClassNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-
-        //Save EncryptedFile
+private static File decryptFile(MimeBodyPart part, PublicParameters publicParam, User user) throws MessagingException, IOException, ClassNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    	
+    	//Save EncryptedFile
         String filename = part.getFileName();
         String[] tabfilename = filename.split("\\.");
         File encryptedFile = new File("decrypt/"+"encryptedFileD"+tabfilename[0]+(new Random().nextInt(1000))+"."+tabfilename[1]);
         part.saveFile(encryptedFile);
 
-        //Deserialize IBECipher
-        FileInputStream fis = new FileInputStream(encryptedFile);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        IBECipher cipher = (IBECipher) ois.readObject();
-        ois.close();
-        fis.close();
-
-        Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramÃ¨tres de la courbe elliptique
-
-        //Decrypt
-        byte[] resulting_bytes = IBEBasicIdent.IBEdecryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), user.getsK(), cipher); //dÃ©chiffrment Basic-ID IBE/AES
-
-        File f = new File("decrypt/"+filename); // crÃ©ation d'un fichier pour l'enregistrement du rÃ©sultat du dÃ©chiffrement
+        File f = new File("decrypt/"+filename); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
+        File f1 = new File(filename); // création d'un fichier pour l'enregistrement du résultat du déchiffrement
         f.createNewFile();
-        FileOutputStream fout = new FileOutputStream(f);
-        fout.write(resulting_bytes); // ecriture du rÃ©sultat de dÃ©chiffrement dans le fichier
-        fout.close();
-    }
+    	
+        try {
+        	//Deserialize IBECipher
+            FileInputStream fis = new FileInputStream(encryptedFile);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            IBECipher cipher = (IBECipher) ois.readObject();
+            ois.close();
+            fis.close();
+
+            Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
+
+            //Decrypt
+            byte[] resulting_bytes = IBEBasicIdent.IBEdecryption(pairing, pairing.getG1().newElementFromBytes(publicParam.getP()), pairing.getG1().newElementFromBytes(publicParam.getP_pub()), user.getsK(), cipher); //déchiffrment Basic-ID IBE/AES
+
+        
+            FileOutputStream fout = new FileOutputStream(f);
+            fout.write(resulting_bytes); // ecriture du résultat de déchiffrement dans le fichier
+            fout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return f1; 
+        }
 }

@@ -107,11 +107,11 @@
                                  </GridPane.margin>
                               </Label>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="attachment(s)" GridPane.columnIndex="1">
-                                 <GridPane.margin>
+                              	<GridPane.margin>
                                     <Insets left="7.0" />
                                  </GridPane.margin>
                               </Text>
-                              <Button fx:id="dowloadBtn" mnemonicParsing="false" text="Download attachments" GridPane.columnIndex="2" />
+                              <Button fx:id="dowloadBtn" mnemonicParsing="false" text="Download attachments" onAction="#DownloadEmailInChosenFolder" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                      </children>

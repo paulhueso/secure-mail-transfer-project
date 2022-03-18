@@ -10,9 +10,9 @@ public class Mail {
     private String subject;
     private String sentDate;
     private String message;
-    private File attachment;
+    private String attachment;
 
-    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message, File attachment) {
+    public Mail(int id, boolean seen, String from, String subject, String sentDate, String message, String attachment) {
         this.id = id;
         this.seen = seen;
         this.from = from;
@@ -91,11 +91,11 @@ public class Mail {
         this.message = message;
     }
 
-    public File getAttachments() {
+    public String getAttachments() {
         return attachment;
     }
 
-    public void setAttachments(File attachment) {
+    public void setAttachments(String attachment) {
         this.attachment = attachment;
     }
 }
