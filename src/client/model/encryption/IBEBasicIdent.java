@@ -7,9 +7,7 @@ package client.model.encryption;
 
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
-import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.util.io.Base64;
-import jdk.jshell.execution.Util;
 import utilities.config.ConfigManager;
 
 import java.io.IOException;

@@ -6,7 +6,6 @@ import client.controller.GeneralViewController;
 import client.controller.LoginController;
 import client.controller.SendMailController;
 import client.model.encryption.PublicParameters;
-import it.unisa.dia.gas.jpbc.Element;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

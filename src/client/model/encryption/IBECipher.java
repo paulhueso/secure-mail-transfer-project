@@ -5,8 +5,6 @@
  */
 package client.model.encryption;
 
-import it.unisa.dia.gas.jpbc.Element;
-
 import java.io.Serializable;
 
 /**
