@@ -55,13 +55,12 @@ public class SendMailController {
 
             int row = attachments.size();
 
-            ImageView closeImg = new ImageView("File:src/images/closeBtn.png");
+            ImageView closeImg = new ImageView("File:src/resources/img/closeBtn.png");
             closeImg.setFitWidth(25.0);
             closeImg.setFitHeight(22.0);
             closeImg.setCursor(Cursor.HAND);
             closeImg.setOnMouseClicked(e -> deleteFile(row-1));
 
-            ListView<GridPane> attachmentsList = new ListView<>();
             GridPane grid = new GridPane();
             grid.add(new Text(file.getName()), 0, 0);
             grid.add(closeImg, 1, 0);
@@ -87,7 +86,7 @@ public class SendMailController {
     }
 
     private void deleteFile(int id) {
-        ImageView closeImg = new ImageView("File:src/images/closeBtn.png");
+        ImageView closeImg = new ImageView("File:src/resources/img/closeBtn.png");
         closeImg.setFitWidth(25.0);
         closeImg.setFitHeight(22.0);
         closeImg.setCursor(Cursor.HAND);
