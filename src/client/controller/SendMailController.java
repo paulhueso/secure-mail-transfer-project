@@ -50,22 +50,23 @@ public class SendMailController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file to upload");
         File file = fileChooser.showOpenDialog(clientApp.getPrimaryStage());
-        attachments.add(file);
+        if (file != null) {
+            attachments.add(file);
 
-        int row = attachments.size();
+            int row = attachments.size();
 
-        ImageView closeImg = new ImageView("File:src/images/closeBtn.png");
-        closeImg.setFitWidth(25.0);
-        closeImg.setFitHeight(22.0);
-        closeImg.setCursor(Cursor.HAND);
-        closeImg.setOnMouseClicked(e -> deleteFile(row-1));
+            ImageView closeImg = new ImageView("File:src/images/closeBtn.png");
+            closeImg.setFitWidth(25.0);
+            closeImg.setFitHeight(22.0);
+            closeImg.setCursor(Cursor.HAND);
+            closeImg.setOnMouseClicked(e -> deleteFile(row-1));
 
-        ListView<GridPane> attachmentsList = new ListView<>();
-        GridPane grid = new GridPane();
-        grid.add(new Text(file.getName()), 0, 0);
-        grid.add(closeImg, 1, 0);
-        attachmentsGrid.add(grid, row, 0);
-
+            ListView<GridPane> attachmentsList = new ListView<>();
+            GridPane grid = new GridPane();
+            grid.add(new Text(file.getName()), 0, 0);
+            grid.add(closeImg, 1, 0);
+            attachmentsGrid.add(grid, row, 0);
+        }
     }
 
     @FXML
