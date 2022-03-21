@@ -69,7 +69,7 @@ public class LoginController {
         String mail = emailInput.getText();
         String password = passwordInput.getText();
 
-        if (mail.isEmpty() || mail == null || password.isEmpty() || password == null) {
+        if (mail == null || mail.isEmpty() || password == null || password.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Missings arguments");
             alert.setContentText("Fill out blanks");
