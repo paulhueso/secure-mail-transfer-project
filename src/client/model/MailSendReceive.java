@@ -46,7 +46,7 @@ import javax.mail.internet.MimeMultipart;
 
 public class MailSendReceive {
 
-    public static void sendmessage(User sender, String destination, String content, String subject) throws GeneralSecurityException {
+    public static void sendMessage(User sender, String destination, String content, String subject) throws GeneralSecurityException {
         System.out.println("Sending email...");
         Properties properties = new Properties();
 
@@ -78,8 +78,8 @@ public class MailSendReceive {
 
     }
 
-    public static void sendmessagewithattachement(User sender, String destination, String content, String subject,
-                                                  ArrayList<File> attachments, PublicParameters publicParam) throws GeneralSecurityException {
+    public static void sendMessageWithAttachment(User sender, String destination, String content, String subject,
+                                                 ArrayList<File> attachments, PublicParameters publicParam) throws GeneralSecurityException {
         Properties properties = new Properties();
 
         MailSSLSocketFactory sf = new MailSSLSocketFactory();

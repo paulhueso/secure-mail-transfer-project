@@ -76,9 +76,9 @@ public class SendMailController {
     @FXML
     private void sendMail(ActionEvent event) {
         try {
-            if(attachments.isEmpty()) MailSendReceive.sendmessage(this.clientApp.getUser(), this.toInput.getText(),
+            if(attachments.isEmpty()) MailSendReceive.sendMessage(this.clientApp.getUser(), this.toInput.getText(),
                     this.mailContent.getText(), this.subjectInput.getText());
-            else MailSendReceive.sendmessagewithattachement(this.clientApp.getUser(), this.toInput.getText(),
+            else MailSendReceive.sendMessageWithAttachment(this.clientApp.getUser(), this.toInput.getText(),
                     this.mailContent.getText(), this.subjectInput.getText(), this.attachments, this.clientApp.getPp());
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
