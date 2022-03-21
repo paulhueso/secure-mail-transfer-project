@@ -5,35 +5,24 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import client.model.Mailsendreceivetest;
+import client.model.MailSendReceive;
 import client.main.ClientApp;
 import client.model.Mail;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-
-
 
 
 public class GeneralViewController {
@@ -110,7 +99,7 @@ public class GeneralViewController {
         mailsubject = subjectLabel.getText();
         
         
-        ObservableList<Mail> mailList = Mailsendreceivetest.downloadEmails(this.clientApp.getUser(), this.clientApp.getPp());
+        ObservableList<Mail> mailList = MailSendReceive.downloadEmails(this.clientApp.getUser(), this.clientApp.getPp());
         for (Mail mail: mailList) {
         	String s0 = mail.getSubject();
         	s0 = s0.intern();
@@ -156,7 +145,7 @@ public class GeneralViewController {
 
     private void loadMails(User user) throws GeneralSecurityException {
         System.out.println("Fetching emails...");
-        ObservableList<Mail> mailList = Mailsendreceivetest.downloadEmails(user, this.clientApp.getPp());
+        ObservableList<Mail> mailList = MailSendReceive.downloadEmails(user, this.clientApp.getPp());
         
         mailTable.setItems(mailList);
         System.out.println("Done !");

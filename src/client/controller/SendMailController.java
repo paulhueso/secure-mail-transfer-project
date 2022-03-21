@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import client.main.ClientApp;
-import client.model.Mailsendreceivetest;
+import client.model.MailSendReceive;
 
 import java.io.File;
 import java.security.GeneralSecurityException;
@@ -76,9 +76,9 @@ public class SendMailController {
     @FXML
     private void sendMail(ActionEvent event) {
         try {
-            if(attachments.isEmpty()) Mailsendreceivetest.sendmessage(this.clientApp.getUser(), this.toInput.getText(),
+            if(attachments.isEmpty()) MailSendReceive.sendmessage(this.clientApp.getUser(), this.toInput.getText(),
                     this.mailContent.getText(), this.subjectInput.getText());
-            else Mailsendreceivetest.sendmessagewithattachement(this.clientApp.getUser(), this.toInput.getText(),
+            else MailSendReceive.sendmessagewithattachement(this.clientApp.getUser(), this.toInput.getText(),
                     this.mailContent.getText(), this.subjectInput.getText(), this.attachments, this.clientApp.getPp());
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
