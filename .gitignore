@@ -3,6 +3,8 @@
 secure-mail-transfer-project.iml
 messagerie-securisee.iml
 out
+decrypt/*
+encrypt/*
 
 # imported from https://github.com/github/gitignore/blob/main/Java.gitignore
 # Compiled class file
