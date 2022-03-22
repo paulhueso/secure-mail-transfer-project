@@ -106,20 +106,19 @@ public class MailSendReceive {
             Multipart myemailcontent = new MimeMultipart();
             MimeBodyPart bodypart = new MimeBodyPart();
             bodypart.setText(content);
-
-            MimeBodyPart attachmentfiles = new MimeBodyPart();
+            myemailcontent.addBodyPart(bodypart);
             attachments.forEach(file -> {
                 File encryptedFile = encryptFile(file, publicParam, destination);
                 try {
-                    attachmentfiles.attachFile(encryptedFile);
+                    MimeBodyPart attachmentfile = new MimeBodyPart();
+                    attachmentfile.attachFile(encryptedFile);
+                    myemailcontent.addBodyPart(attachmentfile);
                 } catch (IOException | MessagingException e) {
                     e.printStackTrace();
                 }
 
             });
 
-            myemailcontent.addBodyPart(bodypart);
-            myemailcontent.addBodyPart(attachmentfiles);
             message.setContent(myemailcontent);
             Transport.send(message);
 
