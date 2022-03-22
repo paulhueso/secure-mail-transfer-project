@@ -11,10 +11,8 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
-import org.bouncycastle.jce.provider.symmetric.AES;
 import utilities.config.ConfigManager;
 
 import javax.crypto.BadPaddingException;

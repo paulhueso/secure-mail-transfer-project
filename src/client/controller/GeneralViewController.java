@@ -5,35 +5,24 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import client.model.Mailsendreceivetest;
+import client.model.MailSendReceive;
 import client.main.ClientApp;
 import client.model.Mail;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-
-
 
 
 public class GeneralViewController {
@@ -89,8 +78,6 @@ public class GeneralViewController {
         mailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> displayEmail(newValue));
         loadMails(this.clientApp.getUser());
-
-        //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     @FXML
@@ -105,58 +92,59 @@ public class GeneralViewController {
     	DirectoryChooser directoryChooser = new DirectoryChooser();
     	directoryChooser.setTitle("Select a directory to save the file(s)");
         File selectedDirectory = directoryChooser.showDialog(clientApp.getPrimaryStage());
-        System.out.println(selectedDirectory);
-        
-        mailsubject = subjectLabel.getText();
-        
-        
-        ObservableList<Mail> mailList = Mailsendreceivetest.downloadEmails(this.clientApp.getUser(), this.clientApp.getPp());
-        for (Mail mail: mailList) {
-        	String s0 = mail.getSubject();
-        	s0 = s0.intern();
-        	if (mailsubject.equals(s0)) {
-        		String attachments = mail.getAttachments();
-        		
-            	String[] tabattach = attachments.split(", ");
-            	for (String attachment: tabattach) {
-                	String filename = attachment;
-                	
-        	        File file = new File(selectedDirectory.toString()+"/"+filename);
-        	        File file0 = new File("decrypt/"+filename);
-        	        FileInputStream inputStream = new FileInputStream(file0);  
-        	        FileOutputStream out = new FileOutputStream(file);
-        	            try {  
-        	                int i;  
-        	                while ((i = inputStream.read()) != -1) {  
-        	                    out.write(i);  
-        	                }  
-        	            }catch(Exception e) {  
-        	                System.out.println("Error Found: "+e.getMessage());  
-        	            }  
-        	            finally {  
-        	                if (inputStream != null) {   
-        	                    inputStream.close();  
-        	                }  
-        	                if (out != null) {  
-        	                    out.close();  
-        	                }  
-        	            }  
-        	            System.out.println("File Copied"); 
-        	        	out.close();
-        	}
-        	}
+        if (selectedDirectory != null) {
+            System.out.println(selectedDirectory);
+
+            mailsubject = subjectLabel.getText();
+
+
+            ObservableList<Mail> mailList = MailSendReceive.downloadEmails(this.clientApp.getUser(), this.clientApp.getPp());
+            for (Mail mail: mailList) {
+                String s0 = mail.getSubject();
+                s0 = s0.intern();
+                if (mailsubject.equals(s0)) {
+                    String attachments = mail.getAttachments();
+
+                    String[] tabattach = attachments.split(", ");
+                    for (String attachment: tabattach) {
+                        String filename = attachment;
+
+                        File file = new File(selectedDirectory.toString()+"/"+filename);
+                        File file0 = new File("decrypt/"+filename);
+                        FileInputStream inputStream = new FileInputStream(file0);
+                        FileOutputStream out = new FileOutputStream(file);
+                        try {
+                            int i;
+                            while ((i = inputStream.read()) != -1) {
+                                out.write(i);
+                            }
+                        }catch(Exception e) {
+                            System.out.println("Error Found: "+e.getMessage());
+                        }
+                        finally {
+                            if (inputStream != null) {
+                                inputStream.close();
+                            }
+                            if (out != null) {
+                                out.close();
+                            }
+                        }
+                        System.out.println("File Copied");
+                        out.close();
+                    }
+                }
+            }
         }
     }
 
     @FXML
     private void refresh(ActionEvent event) throws GeneralSecurityException {
         loadMails(this.clientApp.getUser());
-        //loadMails("test.tpcrypto@outlook.fr", "Azerty123");
     }
 
     private void loadMails(User user) throws GeneralSecurityException {
         System.out.println("Fetching emails...");
-        ObservableList<Mail> mailList = Mailsendreceivetest.downloadEmails(user, this.clientApp.getPp());
+        ObservableList<Mail> mailList = MailSendReceive.downloadEmails(user, this.clientApp.getPp());
         
         mailTable.setItems(mailList);
         System.out.println("Done !");
@@ -171,7 +159,19 @@ public class GeneralViewController {
         dateLabel.setText(selectedMail.getSentDate());
         fromLabel.setText(selectedMail.getFrom());
         subjectLabel.setText(selectedMail.getSubject());
-
+        System.out.println(selectedMail.getAttachments());
+        String attachmentsStr = selectedMail.getAttachments();
+        int nbAttachmentsMail = 0;
+        if (attachmentsStr.length() > 0) {
+            nbAttachmentsMail = 1;
+            for (int i = 0; i < attachmentsStr.length(); i++) {
+                if (attachmentsStr.charAt(i) == ',') {
+                    nbAttachmentsMail++;
+                }
+            }
+        }
+        nbAttachments.setText(String.valueOf(nbAttachmentsMail));
+        downloadBtn.setVisible(nbAttachmentsMail > 0);
         WebEngine engine = mailContent.getEngine();
         engine.loadContent(selectedMail.getMessage());
 

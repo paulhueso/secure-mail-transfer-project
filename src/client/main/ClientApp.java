@@ -1,12 +1,13 @@
 package client.main;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import client.controller.GeneralViewController;
 import client.controller.LoginController;
 import client.controller.SendMailController;
 import client.model.encryption.PublicParameters;
-import it.unisa.dia.gas.jpbc.Element;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,6 +17,9 @@ import javafx.stage.Stage;
 import client.model.User;
 
 public class ClientApp extends Application {
+    private static final String ENCRYPT_FILE_NAME = "encrypt";
+    private static final String DECRYPT_FILE_NAME = "decrypt";
+
     private User user;
     private PublicParameters pp;
 
@@ -123,9 +127,38 @@ public class ClientApp extends Application {
         return primaryStage;
     }
 
+    public static void setupCache() {
+        File encryptDir = new File(ENCRYPT_FILE_NAME);
+        File decryptDir = new File(DECRYPT_FILE_NAME);
+        if (!encryptDir.exists()) {
+            encryptDir.mkdirs();
+        }
+        if (!decryptDir.exists()) {
+            decryptDir.mkdirs();
+        }
+    }
 
+    public static void cleanCache() {
+        File encryptDir = new File(ENCRYPT_FILE_NAME);
+        File decryptDir = new File(DECRYPT_FILE_NAME);
+        if (ENCRYPT_FILE_NAME.length() < 4 || DECRYPT_FILE_NAME.length() < 4) { // Protection
+            return;
+        }
+        for(File file: Objects.requireNonNull(encryptDir.listFiles())) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+        for(File file: Objects.requireNonNull(decryptDir.listFiles())) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+    }
 
     public static void main(String[] args) {
+        setupCache();
         launch(args);
+        cleanCache();
     }
 }
