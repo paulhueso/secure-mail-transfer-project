@@ -1,7 +1,5 @@
 package client.model;
 
-import it.unisa.dia.gas.jpbc.Element;
-
 import java.io.Serializable;
 
 public class Credentials implements Serializable {

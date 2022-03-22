@@ -69,7 +69,7 @@ public class LoginController {
         String mail = emailInput.getText();
         String password = passwordInput.getText();
 
-        if (mail.isEmpty() || mail == null || password.isEmpty() || password == null) {
+        if (mail == null || mail.isEmpty() || password == null || password.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Missings arguments");
             alert.setContentText("Fill out blanks");
@@ -78,13 +78,21 @@ public class LoginController {
             User user = new User(mail, password);
             this.clientApp.setUser(user);
             getPublicParams();
-            getSecretKey(user);
-            this.clientApp.showMailsOverview();
+            boolean gotSecretKey = getSecretKey(user);
+            if (!gotSecretKey) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Authentication error");
+                alert.setContentText("Invalid username or password");
+                alert.showAndWait();
+            }
+            else {
+                this.clientApp.showMailsOverview();
 
+            }
         }
     }
 
-    private void getSecretKey(User user) {
+    private boolean getSecretKey(User user) {
         Pairing pairing = PairingFactory.getPairing("src\\utilities\\curves\\a.properties"); // chargement des paramètres de la courbe elliptique
         Element secretKey = pairing.getZr().newRandomElement();
         try {
@@ -101,17 +109,19 @@ public class LoginController {
             CryptedCredentials cryptedCredentials = new CryptedCredentials(user.getCredentials());
             byte[] AESKey = cryptedCredentials.encrypt(this.clientApp.getPp(), pairing, secretKey);
             out.writeObject(cryptedCredentials);
-            int contentLength = Integer.parseInt(urlConn.getHeaderField("Content-length"));
-            if (contentLength > 0) {
+            if (urlConn.getHeaderField("Content-length") != null) {
+                int contentLength = Integer.parseInt(urlConn.getHeaderField("Content-length"));
                 InputStream is = urlConn.getInputStream();
                 byte[] cryptedSKBytes = new byte[contentLength];
                 is.read(cryptedSKBytes);
                 Element sk = pairing.getG1().newElementFromBytes(AESCrypto.decrypt(cryptedSKBytes, AESKey));
                 this.clientApp.getUser().setsK(sk);
+                return true;
             }
         } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private void getPublicParams() {

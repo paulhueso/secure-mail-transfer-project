@@ -3,8 +3,6 @@ package client.model.encryption;
 import client.model.Credentials;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
-import javafx.util.Pair;
-import org.bouncycastle.jce.provider.symmetric.AES;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
