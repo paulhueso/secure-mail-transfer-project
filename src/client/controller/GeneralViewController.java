@@ -34,6 +34,8 @@ public class GeneralViewController {
     @FXML
     private Button backBtn;
     @FXML
+    private Label idLabel;
+    @FXML
     private Label dateLabel;
     @FXML
     private Label subjectLabel;
@@ -58,9 +60,6 @@ public class GeneralViewController {
     private WebView mailContent;
     @FXML
     private GridPane attachmentsGrid;
-    
-    
-    private String mailsubject = "";
 
     private ClientApp clientApp;
     
@@ -95,14 +94,11 @@ public class GeneralViewController {
         if (selectedDirectory != null) {
             System.out.println(selectedDirectory);
 
-            mailsubject = subjectLabel.getText();
-
+            int id = Integer.parseInt(idLabel.getText());
 
             ObservableList<Mail> mailList = MailSendReceive.downloadEmails(this.clientApp.getUser(), this.clientApp.getPp());
             for (Mail mail: mailList) {
-                String s0 = mail.getSubject();
-                s0 = s0.intern();
-                if (mailsubject.equals(s0)) {
+                if (id == mail.getId()) {
                     String attachments = mail.getAttachments();
 
                     String[] tabattach = attachments.split(", ");
@@ -113,11 +109,15 @@ public class GeneralViewController {
                         File file0 = new File("decrypt/"+filename);
                         FileInputStream inputStream = new FileInputStream(file0);
                         FileOutputStream out = new FileOutputStream(file);
+                        byte[] fileBytes = new byte[inputStream.available()];
                         try {
-                            int i;
-                            while ((i = inputStream.read()) != -1) {
-                                out.write(i);
-                            }
+                            inputStream.read(fileBytes);
+                            out.write(fileBytes);
+//                            int i;
+//
+//                            while ((i = inputStream.read()) != -1) {
+//                                out.write(i);
+//                            }
                         }catch(Exception e) {
                             System.out.println("Error Found: "+e.getMessage());
                         }
@@ -159,6 +159,7 @@ public class GeneralViewController {
         dateLabel.setText(selectedMail.getSentDate());
         fromLabel.setText(selectedMail.getFrom());
         subjectLabel.setText(selectedMail.getSubject());
+        idLabel.setText(String.valueOf(selectedMail.getId()));
         System.out.println(selectedMail.getAttachments());
         String attachmentsStr = selectedMail.getAttachments();
         int nbAttachmentsMail = 0;
