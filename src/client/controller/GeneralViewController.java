@@ -60,7 +60,7 @@ public class GeneralViewController {
     private GridPane attachmentsGrid;
     
     
-    private String mailsubject = "";
+    private Mail selectedMail;
 
     private ClientApp clientApp;
     
@@ -95,44 +95,33 @@ public class GeneralViewController {
         if (selectedDirectory != null) {
             System.out.println(selectedDirectory);
 
-            mailsubject = subjectLabel.getText();
+            String attachments = selectedMail.getAttachments();
 
+            String[] tabattach = attachments.split(", ");
+            for (String attachment: tabattach) {
+                String filename = attachment;
 
-            ObservableList<Mail> mailList = MailSendReceive.downloadEmails(this.clientApp.getUser(), this.clientApp.getPp());
-            for (Mail mail: mailList) {
-                String s0 = mail.getSubject();
-                s0 = s0.intern();
-                if (mailsubject.equals(s0)) {
-                    String attachments = mail.getAttachments();
-
-                    String[] tabattach = attachments.split(", ");
-                    for (String attachment: tabattach) {
-                        String filename = attachment;
-
-                        File file = new File(selectedDirectory.toString()+"/"+filename);
-                        File file0 = new File("decrypt/"+filename);
-                        FileInputStream inputStream = new FileInputStream(file0);
-                        FileOutputStream out = new FileOutputStream(file);
-                        try {
-                            int i;
-                            while ((i = inputStream.read()) != -1) {
-                                out.write(i);
-                            }
-                        }catch(Exception e) {
-                            System.out.println("Error Found: "+e.getMessage());
-                        }
-                        finally {
-                            if (inputStream != null) {
-                                inputStream.close();
-                            }
-                            if (out != null) {
-                                out.close();
-                            }
-                        }
-                        System.out.println("File Copied");
+                File file = new File(selectedDirectory.toString() + "/" + filename);
+                File file0 = new File("decrypt/" + filename);
+                FileInputStream inputStream = new FileInputStream(file0);
+                FileOutputStream out = new FileOutputStream(file);
+                try {
+                    int i;
+                    while ((i = inputStream.read()) != -1) {
+                        out.write(i);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error Found: " + e.getMessage());
+                } finally {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                    if (out != null) {
                         out.close();
                     }
                 }
+                System.out.println("File Copied");
+                out.close();
             }
         }
     }
@@ -151,6 +140,8 @@ public class GeneralViewController {
     }
 
     private void displayEmail(Mail selectedMail) {
+        this.selectedMail = selectedMail;
+
         mailTable.setVisible(false);
         refreshBtn.setVisible(false);
         backBtn.setVisible(true);
