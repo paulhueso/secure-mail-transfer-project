@@ -22,6 +22,9 @@ This is done using the Identity Based Encrypton.
 
 ```
 
+## Presentation link
+https://docs.google.com/presentation/d/1g6JohGzWmDF3Y7KVqCQNSibfd9IMt5wpVSO2UNh12c8/edit?usp=sharing
+
 ## Jars recquired
 - JPBC
 - JavaFX
